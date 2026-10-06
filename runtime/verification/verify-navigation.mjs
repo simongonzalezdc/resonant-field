@@ -16,7 +16,7 @@ try{
  browser=await chromium.launch({headless:true,executablePath:process.env.RESONANT_CHROMIUM_EXECUTABLE,args:['--disable-dev-shm-usage']});
  const page=await browser.newPage();page.on('pageerror',e=>out.errors.push(String(e)));
  await page.addInitScript(()=>{window.__fullRenders=0;document.addEventListener('click',e=>window.__lastNavClick=e.target.closest('button')?.id||e.target.closest('button')?.dataset.surface);addEventListener('resonant-volume-rendered',e=>{if(!e.detail?.target)window.__fullRenders++;});});
- const url=`http://127.0.0.1:${port}/proposal/resonant-field-proposal.html?fieldVideo=1#app`;
+ const url=`http://127.0.0.1:${port}/proposal/resonant-field-proposal.html#app`;
  await page.goto(url,{waitUntil:'networkidle'});
  const settled=async()=>{await page.waitForFunction(()=>ResonantWorldSampler.isCurrent(),{},{timeout:15000});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));};
  const go=async route=>{await page.locator('#appHeader '+routes[route]).click();await settled();};

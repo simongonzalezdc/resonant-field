@@ -1,13 +1,13 @@
 {
   "scope": "Design-system proposal only",
-  "revision": "Navigation coherence and material refresh corrections validated",
+  "revision": "Shared appearance continuity with opt-in learned application validated",
   "asset_records_verified": 74,
   "code_records_verified": 14,
   "third_party_notices_present": true,
   "binary_media_excluded": true,
   "browser": {
     "passed": true,
-    "hashes": 165,
+    "hashes": 166,
     "html_pages": [
       {
         "file": "index.html",
@@ -881,5 +881,16 @@
     ]
   },
   "unchanged_image_font_bytes": true,
-  "uniform_material_color_parity": "Five depth samples match exactly in light and dark modes"
+  "uniform_material_color_parity": "Five depth samples match exactly in light and dark modes",
+  "appearance_navigation": {
+    "passed": true,
+    "errors": [],
+    "checks": [
+      "40 real-mode navigation transitions retain selected appearance, exact five-depth colors, stored choice and learning history despite conflicting learned profiles",
+      "Explicit opt-in still applies a confident learned appearance",
+      "Opt-in and pause persist after reload without erasing learned choices",
+      "Selected photographic appearance also stays shared across all destinations"
+    ],
+    "transitions": 40
+  }
 }

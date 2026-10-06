@@ -205,6 +205,8 @@ const storageKey = "resonant.system3.proposal.appearance.v1",
   draftRecordKey = "resonant.system3.proposal.draft.v2",
   learningStorageKey = "resonant.system3.appearance.learning.v1",
   LEARNING_CONFIDENCE_THRESHOLD = 0.72;
+const adaptationStorageKey = "resonant.system3.proposal.adaptation.v1";
+let adaptOnNavigation = readStored(adaptationStorageKey) === "true";
 function readDraftRecord() {
   try {const value=JSON.parse(readStored(draftRecordKey)||"null");return value && typeof value.text === "string" && value.text.length<=12000 && ["appearance","browser-context"].includes(value.task) ? value : null;}catch{return null;}
 }
@@ -446,6 +448,8 @@ function setLearningStatus(text) {
 function syncLearningControls() {
   const enabled = $("learningEnabled"), reset = $("resetLearning");
   if (!enabled || !reset) return;
+  $("adaptiveAppearance").checked = adaptOnNavigation;
+  $("adaptiveAppearance").disabled = !appearanceLearning;
   if (!appearanceLearning) {
     enabled.disabled = true;
     reset.disabled = true;
@@ -460,9 +464,9 @@ function syncLearningControls() {
   if (!info.enabled) {
     setLearningStatus("Private learning is paused. Existing choices stay on this device until you reset them.");
   } else if (context) {
-    setLearningStatus(`${context.observations} committed choice${context.observations === 1 ? "" : "s"} in this context; learning adapts only after a confident pattern.`);
+    setLearningStatus(`${context.observations} committed choice${context.observations === 1 ? "" : "s"} in this context. ${adaptOnNavigation ? "Automatic application requires a confident pattern." : "Automatic application is off; your selected look stays active."}`);
   } else {
-    setLearningStatus("Learning uses only committed manual changes and adapts on a later context entry.");
+    setLearningStatus("Learning remembers committed manual changes. Automatic application is a separate choice.");
   }
 }
 function installAppearanceServices() {
@@ -523,13 +527,13 @@ function commitManualAppearance() {
     now: Date.now(),
   });
   if (result.accepted)
-    setLearningStatus("Committed locally. A later entry may adapt after a confident pattern; no content was recorded.");
+    setLearningStatus("Committed locally. Your look stays active unless you enable automatic application; no content was recorded.");
   else if (result.reason === "disabled")
     setLearningStatus("Private learning is paused; this manual change was not learned.");
   syncLearningControls();
 }
 function maybeAdaptAppearance() {
-  if (new URLSearchParams(location.search).has("fieldVideo") || !appearanceLearning || appearanceGestureActive || root.dataset.appearance === "open") return;
+  if (!adaptOnNavigation || new URLSearchParams(location.search).has("fieldVideo") || !appearanceLearning || appearanceGestureActive || root.dataset.appearance === "open") return;
   const context = learningContext(), key = learningContextSignature(context);
   if (learningContextKey !== key) {
     learningContextKey = key;
@@ -966,6 +970,14 @@ $("learningEnabled").addEventListener("change", (e) => {
   syncLearningControls();
   announce(e.target.checked ? "Private appearance learning resumed." : "Private appearance learning paused.");
 });
+$("adaptiveAppearance").addEventListener("change", (e) => {
+  adaptOnNavigation = e.target.checked;
+  writeStored(adaptationStorageKey, String(adaptOnNavigation));
+  syncLearningControls();
+  announce(adaptOnNavigation
+    ? "Learned appearance may apply when you switch views."
+    : "Automatic application paused. Your current look stays active across views.");
+});
 $("resetLearning").addEventListener("click", () => {
   if (!appearanceLearning) return;
   appearanceLearning.reset();
@@ -1265,6 +1277,7 @@ function commitRoute() {
     : root.dataset.view === "proposal" ? "#proposal" : "#design-system";
   $("appBadge").textContent = app ? "App prototype" : root.dataset.view === "proposal" ? "Design proposal" : "Design system";
   maybeAdaptAppearance();
+  syncLearningControls();
   window.ResonantVolume?.refresh();
   ResonantGeometry.configure(prefs.cornerProfile);
   window.ResonantWorldSampler?.refresh(true);

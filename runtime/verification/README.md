@@ -21,3 +21,5 @@ These automated checks do not certify all contrast combinations or replace manua
 Run `npm test --prefix runtime/verification` for the shipped blend, finish and contrast controller regressions. They require Node only; the browser dependency is not loaded by those tests.
 
 Run `node runtime/verification/verify-navigation.mjs` for all 20 directed navigation pairs at five viewport widths, active navigation semantics, history and brand routing, scroll retention, shared Appearance access, full-size photo samples after a delayed return, and scene teardown. It uses the same browser environment variables and optional root/receipt arguments. This checks interaction correctness; headless timing does not certify smoothness on every device.
+
+Run `node runtime/verification/verify-appearance-navigation.mjs` to check ordinary browsing with conflicting learned profiles. It checks selected appearance, exact uniform sample colors, stored preferences, learning-history preservation, explicit automatic-application opt-in and pause, reload persistence, and photographic appearance continuity. Capture mode is not used.
