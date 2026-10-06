@@ -5143,21 +5143,15 @@ html[data-surface=combined] #appStatus label{display:none}
   button.rv-component.primary:not(:disabled) { color: var(--color-text) !important; }
 }
 
-/* Keep reading content clear of panel edges and rounded corners. */
-:root {
-  --panel-content-inset: clamp(1rem, 1.7vw, 1.5rem);
-  --panel-inner-inset: clamp(1rem, 1.4vw, 1.25rem);
+/* Thinking disclosures in the material conversation need their own content inset. */
+.compound-thread .think > summary {
+  padding: 12px 16px;
+  min-height: 44px;
+  line-height: 1.55;
 }
-.pane-head,
-.compound-pane-head { padding: var(--panel-content-inset); }
-.thread,
-.review-scroll,
-.compound-thread,
-.compound-review-scroll { padding-inline: var(--panel-content-inset); }
-.review-pane .decision,
-.compound-evidence,
-.compound-inspector,
-.compound-draft,
-.compound-decision { padding: var(--panel-inner-inset); }
-.review-pane .draft-editor,
-.compound-draft textarea { padding: var(--panel-inner-inset); }
+.compound-thread .think > pre {
+  margin: 0;
+  padding: 0 16px 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
