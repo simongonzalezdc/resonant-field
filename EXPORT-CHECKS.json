@@ -1,0 +1,263 @@
+{
+  "scope": "Design-system proposal only",
+  "revision": "Audit and independent re-review remediation validated",
+  "asset_records_verified": 74,
+  "code_records_verified": 14,
+  "third_party_notices_present": true,
+  "binary_media_excluded": true,
+  "browser": {
+    "passed": true,
+    "hashes": 159,
+    "html_pages": [
+      {
+        "file": "index.html",
+        "title": "Resonant Field \u00b7 Proposal review",
+        "body": 370,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/curation/background-contact-sheet-final-round.html",
+        "title": "Resonant Field backgrounds",
+        "body": 934,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/curation/create-background.html",
+        "title": "Resonant Field \u00b7 Create a background",
+        "body": 964,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/extension/blackboard-source.html",
+        "title": "Resonant Blackboard",
+        "body": 503,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/extension/blackboard.html",
+        "title": "Resonant Blackboard",
+        "body": 1062,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/reference/blackboard/preview.html",
+        "title": "Resonant Blackboard",
+        "body": 503,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/reference/comparison/rosi.html",
+        "title": "ROSI atomic specimens",
+        "body": 160,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/reference/comparison/system3.html",
+        "title": "Resonant Field atomic specimens",
+        "body": 128,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/reference/rosi/preview.html",
+        "title": "ROSI Design System \u2014 ResonantOS Browser \u00b7 5-Direction Comparison",
+        "body": 10314,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "proposal/resonant-field-proposal.html",
+        "title": "Resonant Field \u2014 App prototype",
+        "body": 2459,
+        "overflow": false,
+        "missingImages": 0
+      },
+      {
+        "file": "runtime/verification/fixtures/host-smoke.html",
+        "title": "Resonant Field local host smoke fixture",
+        "body": 1580,
+        "overflow": false,
+        "missingImages": 0
+      }
+    ],
+    "plates": [
+      "tide-v2",
+      "coral-reef",
+      "mangrove-blackwater",
+      "tidal-silt",
+      "basalt-void",
+      "desert-dunes",
+      "forest",
+      "cloud-canopy-v2",
+      "canopy-up",
+      "night",
+      "orbital-city",
+      "rain-city",
+      "architecture-threshold",
+      "architecture-junction",
+      "architecture-lightwell",
+      "black-water-v2",
+      "hammered-metal",
+      "mica-cleavage",
+      "vellum-fold-v2",
+      "leather-grain",
+      "wood-endgrain",
+      "animal-fox",
+      "animal-kingfisher",
+      "animal-sea-turtle",
+      "plain"
+    ],
+    "errors": [],
+    "network_failures": [],
+    "external_requests": [],
+    "responsive": [
+      {
+        "width": 390,
+        "route": "proposal",
+        "view": "proposal",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 390,
+        "route": "app",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 390,
+        "route": "design-system",
+        "view": "library",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 390,
+        "route": "combined",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 768,
+        "route": "proposal",
+        "view": "proposal",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 768,
+        "route": "app",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 768,
+        "route": "design-system",
+        "view": "library",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 768,
+        "route": "combined",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 1440,
+        "route": "proposal",
+        "view": "proposal",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 1440,
+        "route": "app",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 1440,
+        "route": "design-system",
+        "view": "library",
+        "overflow": false,
+        "missing": 0
+      },
+      {
+        "width": 1440,
+        "route": "combined",
+        "view": "app",
+        "overflow": false,
+        "missing": 0
+      }
+    ],
+    "keyboard": {
+      "opened": true,
+      "focusWithin": true,
+      "closed": true,
+      "focusRestored": true
+    },
+    "accessibility": {
+      "announcer": true,
+      "misleadingStatus": 0,
+      "learningRole": "note",
+      "numericReadoutsSilent": true
+    },
+    "forcedColors": {
+      "forced": true,
+      "reducedMotion": true
+    },
+    "messaging": "cards",
+    "rejectedMessage": true,
+    "rejectedSourceMessage": true
+  },
+  "verification_runner": "runtime/verification/verify-proposal.mjs",
+  "controller_regressions": {
+    "passed": 16,
+    "failed": 0,
+    "command": "npm test --prefix runtime/verification"
+  },
+  "artifact_resolver_regressions": {
+    "passed": 4,
+    "failed": 0,
+    "command": "python runtime/verification/test-harness.py"
+  },
+  "privacy": {
+    "text_scan": "pass",
+    "audio_video_containers": "none",
+    "image_metadata_checked": 70
+  },
+  "local_links_verified": 74,
+  "standalone_host": {
+    "passed": true,
+    "checks": [
+      "mounted semantic five-depth host",
+      "real DOM state transitions",
+      "appearance rebuild",
+      "corners avoid scene rebuild",
+      "teardown clears resources"
+    ],
+    "errors": []
+  },
+  "limitations": [
+    "Automated browser checks do not replace manual screen-reader acceptance or full contrast certification.",
+    "Python Playwright/WebKit unavailable in current environment; dependencies declared and Node Chromium used for checked browser behaviors."
+  ],
+  "reference_status": {
+    "blackboard_pr_198": "closed, not merged",
+    "blackboard_issue_427": "open",
+    "augmentor_license": "MIT at pinned source revision"
+  }
+}

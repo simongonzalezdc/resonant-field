@@ -1,0 +1,6 @@
+*.mp4
+*.wav
+*.zip
+__pycache__/
+
+.verification-output/

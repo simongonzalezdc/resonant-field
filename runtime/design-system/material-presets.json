@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "accentOffset": 150,
+  "presets": [
+    {
+      "id": "graphite",
+      "label": "Graphite",
+      "description": "A neutral starting point for calm reading.",
+      "rationale": "Zero material chroma keeps the plate and text relationship easy to inspect.",
+      "hue": 0,
+      "strength": 0,
+      "surfaceLight": 50,
+      "accentLight": 50,
+      "accentLinked": true,
+      "accent": 150,
+      "surfaceColor": {
+        "label": "Neutral graphite",
+        "oklch": {
+          "l": 0.5,
+          "c": 0,
+          "h": 0
+        }
+      },
+      "accentColor": {
+        "label": "Graphite split complement",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.11,
+          "h": 150
+        }
+      }
+    },
+    {
+      "id": "indigo",
+      "label": "Indigo",
+      "description": "Blue-violet material with a contrasting golden accent.",
+      "rationale": "275\u00b0 selects the blue-violet region of OKLCH; strength 36 produces chroma 0.108.",
+      "hue": 275,
+      "strength": 36,
+      "surfaceLight": 50,
+      "accentLight": 50,
+      "accentLinked": true,
+      "accent": 65,
+      "surfaceColor": {
+        "label": "Blue-violet indigo",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.108,
+          "h": 275
+        }
+      },
+      "accentColor": {
+        "label": "Indigo split complement",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.11,
+          "h": 65
+        }
+      }
+    },
+    {
+      "id": "rose",
+      "label": "Rose",
+      "description": "Rose material with a contrasting green accent.",
+      "rationale": "350\u00b0 selects the red-to-magenta region; strength 28 keeps the material chroma at 0.084.",
+      "hue": 350,
+      "strength": 28,
+      "surfaceLight": 50,
+      "accentLight": 50,
+      "accentLinked": true,
+      "accent": 140,
+      "surfaceColor": {
+        "label": "Soft rose",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.084,
+          "h": 350
+        }
+      },
+      "accentColor": {
+        "label": "Rose split complement",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.11,
+          "h": 140
+        }
+      }
+    },
+    {
+      "id": "amber",
+      "label": "Amber",
+      "description": "Golden material with a contrasting blue accent.",
+      "rationale": "75\u00b0 selects the yellow-orange region; strength 28 keeps material chroma at 0.084.",
+      "hue": 75,
+      "strength": 28,
+      "surfaceLight": 50,
+      "accentLight": 50,
+      "accentLinked": true,
+      "accent": 225,
+      "surfaceColor": {
+        "label": "Golden amber",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.084,
+          "h": 75
+        }
+      },
+      "accentColor": {
+        "label": "Amber split complement",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.11,
+          "h": 225
+        }
+      }
+    },
+    {
+      "id": "jade",
+      "label": "Jade",
+      "description": "Blue-green material with a contrasting magenta accent.",
+      "rationale": "165\u00b0 selects the green-to-cyan region; strength 30 produces chroma 0.09.",
+      "hue": 165,
+      "strength": 30,
+      "surfaceLight": 50,
+      "accentLight": 50,
+      "accentLinked": true,
+      "accent": 315,
+      "surfaceColor": {
+        "label": "Blue-green jade",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.09,
+          "h": 165
+        }
+      },
+      "accentColor": {
+        "label": "Jade split complement",
+        "oklch": {
+          "l": 0.5,
+          "c": 0.11,
+          "h": 315
+        }
+      }
+    }
+  ]
+}

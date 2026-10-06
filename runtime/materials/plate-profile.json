@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "width": 1664,
+  "height": 936,
+  "aspect_ratio": "16:9",
+  "crop": "Largest native 16:9 crop, then downsample; no enlargement",
+  "grayscale": true,
+  "pixel_depth": 8,
+  "alpha": false,
+  "delivery_format": "WebP lossless",
+  "method": 4,
+  "thumbnail_width": 640,
+  "thumbnail_height": 360,
+  "thumbnail_quality": 82,
+  "scope": "Selectable plates only; archived originals remain untouched"
+}

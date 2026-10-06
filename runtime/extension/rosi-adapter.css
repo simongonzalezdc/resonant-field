@@ -1,0 +1,122 @@
+/*
+ * ROSI compatibility adapter for compound extension surfaces.
+ *
+ * Foundation contract: the consuming extension build includes
+ * reference/rosi/tokens.css before this file. The adapter deliberately does
+ * not redeclare --rosi-* tokens or copy their values.
+ *
+ * This is an additive bridge. Resonant Field’s volume renderer remains authoritative
+ * for material faces, ink, opacity, depth, transforms, shadows, and fallback
+ * modes. Transparent control faces below only release source-demo fills so
+ * that renderer-owned faces can show through; they are not a new surface.
+ */
+
+.compound-surface {
+  font: var(--rosi-text-base) / var(--rosi-leading-normal) var(--rosi-font-system);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.compound-surface button,
+.compound-surface input,
+.compound-surface textarea,
+.compound-surface select {
+  box-sizing: border-box;
+  font-family: var(--rosi-font-system);
+  color: inherit;
+  background-color: transparent;
+  border: 1px solid var(--rosi-border-subtle);
+  caret-color: currentColor;
+}
+
+/* ROSI uses pill geometry for every button, including square icon buttons. */
+.compound-surface button {
+  min-block-size: 44px !important;
+  padding: var(--rosi-space-2) var(--rosi-space-4);
+  border-radius: var(--rosi-radius-full);
+  cursor: pointer;
+  transition:
+    border-color var(--rosi-duration-fast) var(--rosi-ease-out),
+    outline-color var(--rosi-duration-fast) var(--rosi-ease-out);
+}
+
+/* The 44px minimum intentionally supersedes the smaller source-demo sizes. */
+.compound-surface input,
+.compound-surface select,
+.compound-surface textarea {
+  min-block-size: 44px !important;
+  padding: var(--rosi-space-2) var(--rosi-space-3);
+  border-radius: var(--rosi-radius-sm);
+  resize: none;
+}
+
+.compound-surface textarea {
+  min-block-size: 44px !important;
+  border-radius: var(--rosi-radius-base);
+  resize: vertical;
+}
+
+/* Icon geometry stays square while retaining the full pill/circle radius. */
+.compound-surface button:is(.icon-button, .aug-icon-button, .hbtn, .hicon) {
+  inline-size: 44px;
+  padding: 0;
+}
+
+.compound-surface button:hover:not(:disabled),
+.compound-surface input:hover:not(:disabled),
+.compound-surface textarea:hover:not(:disabled),
+.compound-surface select:hover:not(:disabled) {
+  border-color: var(--rosi-border-default);
+}
+
+.compound-surface button:focus-visible,
+.compound-surface input:focus-visible,
+.compound-surface textarea:focus-visible,
+.compound-surface select:focus-visible {
+  border-color: var(--rosi-border-glow);
+  outline: 1px solid var(--rosi-border-glow);
+  outline-offset: 2px;
+}
+
+.compound-surface button[aria-pressed="true"],
+.compound-surface button[data-volume-state="selected"],
+.compound-surface button[data-volume-state="active"] {
+  border-color: var(--rosi-border-glow);
+}
+
+.compound-surface button:disabled,
+.compound-surface button[aria-disabled="true"],
+.compound-surface input:disabled,
+.compound-surface textarea:disabled,
+.compound-surface select:disabled {
+  cursor: not-allowed;
+}
+
+/* Keep warning and error meaning stable without painting a competing face. */
+.compound-surface :is(button, input, textarea, select)[data-status="warning"],
+.compound-surface :is(button, input, textarea, select)[data-tone="warning"] {
+  border-color: var(--rosi-status-warning);
+}
+
+.compound-surface :is(button, input, textarea, select)[data-status="error"],
+.compound-surface :is(button, input, textarea, select)[data-tone="error"],
+.compound-surface :is(button, input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--rosi-status-error);
+}
+
+.compound-surface svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compound-surface button,
+  .compound-surface input,
+  .compound-surface textarea,
+  .compound-surface select {
+    transition: none;
+  }
+}

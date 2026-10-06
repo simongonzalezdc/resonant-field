@@ -1,0 +1,12 @@
+{
+  "name": "resonant-field-verification",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify": "node verify-proposal.mjs",
+    "test": "node --test *-tests.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.55.0"
+  }
+}

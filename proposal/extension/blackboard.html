@@ -1,0 +1,53 @@
+<!--
+  Resonant Blackboard — ResonantOS Visual Display Surface
+  Design System: Michel's Atomic Design (tokens, typography, component hierarchy)
+  Implementation: Tom Pennington / Analog 6
+  Credit: Michel — design tokens, Inter + Poppins typography, atom/molecule patterns, WCAG accessibility
+-->
+<!doctype html>
+<html lang="en" data-theme="dark" data-blackboard-preview="true">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; frame-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resonant Blackboard</title>
+  <link rel="stylesheet" href="../reference/blackboard/preview.css" />
+<link rel="stylesheet" href="../delivery-assets/runtime-9cd1c7a86c120e75.css"><link rel="stylesheet" href="blackboard.css?v=c84679217e862a13"></head>
+<body class="compound-surface">
+
+  <div id="blackboard-toolbar">
+    <span class="bb-title">◈ Resonant Blackboard</span>
+    <div class="bb-mode-tabs">
+      <button data-mode="canvas" class="active">Canvas</button>
+      <button data-mode="document">Document</button>
+      <button data-mode="table">Table</button>
+      <button data-mode="embed">Web</button>
+      <button data-mode="image">Image</button>
+      <button data-mode="present">Present</button>
+      <button data-mode="annotate">Annotate</button>
+    </div>
+    <div class="bb-toolbar-actions">
+      <button id="bb-export" class="bb-action-btn" title="Export / copy content">Export</button>
+      <button id="bb-send-to-augmentor" class="bb-action-btn bb-send-btn" title="Send current blackboard content to Augmentor">Send to Augmentor ◈</button>
+      <button id="bb-clear" class="bb-action-btn" title="Clear blackboard">Clear</button>
+    </div>
+  </div>
+  <div id="blackboard-surface">
+    <div id="bb-welcome" class="bb-welcome">
+      <div class="bb-welcome-icon">◈</div>
+      <h2>Resonant Blackboard</h2>
+      <p>Augmentor's visual display surface. Type a command in the side panel to display content here.</p>
+      <div class="bb-welcome-commands">
+        <code>/blackboard</code> — open / focus<br>
+        <code>/draw</code> — canvas diagram<br>
+        <code>/table</code> — data table<br>
+        <code>/doc</code> — markdown document<br>
+        <code>/show &lt;url&gt;</code> — embed webpage<br>
+        <code>/present</code> — slideshow
+      </div>
+    </div>
+  </div>
+  <script src="../delivery-assets/volume-895316023a5d9caa.js"></script><script src="../delivery-assets/geometry-60b7c29c2c3655ba.js"></script><script src="blackboard.js?v=208cfe78cafd8691"></script><script type="module" src="blackboard-runtime.js"></script>
+
+<img hidden id="compoundSampleImage" src="../reference/blackboard/preview-image.svg" alt=""><footer class="compound-frame-foot">Local display examples · experimental Blackboard renderer · remote Web mode unavailable</footer></body>
+</html>

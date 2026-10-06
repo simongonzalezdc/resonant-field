@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "Resonant Field background photograph",
+  "purpose": "Generate a setting that remains legible behind the real translucent UI in dark and light modes.",
+  "variables": {
+    "subject": "A specific real-world subject or identifiable material",
+    "perspective": "Close-up, macro, underwater, upward view or landscape",
+    "lighting": "Soft natural light with restrained highlights",
+    "reading_regions": "The actual reading-panel regions of the selected workspace layout",
+    "detail_regions": "The exposed background areas around those panels",
+    "material_cues": "Physical details that make the subject recognisable",
+    "mood": "Quiet, tactile and photographic"
+  },
+  "template": "Create ONE photorealistic black-and-white background photograph of {subject}, seen from {perspective}. Show authentic {material_cues}, believable scale, optics and depth. Lighting: {lighting}. Mood: {mood}. Compose for a full-screen Resonant Field workspace: {reading_regions} need gentle tonal transitions and restrained local contrast; place the richer natural detail in {detail_regions}. Keep the subject recognisable, with quieter regions integrated naturally into the scene, not a blank artificial hole. Preserve useful composition when cropped to desktop, tablet and portrait. Wide 16:9. Use the highest supported native resolution, preferably 3840×2160; do not upscale a smaller image and claim it is native. Strict grayscale, equal RGB channels, no sepia or colored tint. Avoid clipped white glare, crushed black fields and repetitive high-contrast lines beneath text. No text, logo, people, interface, panes, rectangles, glass effects, diagram, border, artificial grain overlay or contact sheet. Generate only the photograph; the actual UI supplies color, translucency and blur.",
+  "delivery": {
+    "aspect_ratio": "16:9",
+    "current_cohort_pixels": [1664, 936],
+    "preferred_master_pixels": [3840, 2160],
+    "resize_policy": "Keep the largest native 16:9 crop, then downsample to the current cohort size; never enlarge to imply extra detail.",
+    "color": "8-bit achromatic RGB, no alpha",
+    "codec": "Lossless WebP",
+    "bitrate": "Not applicable to still images; record actual bytes instead.",
+    "provenance": "Save the exact final prompt, tool, actual native dimensions, source hash and date. Record unknown model versions as unknown."
+  },
+  "acceptance": [
+    "Recognisable subject or real material, distinct from existing plates",
+    "Full composition checked at 16:9, square and portrait crops",
+    "Actual reading panes checked in both dark and light mode",
+    "Bright details do not compete with text or focus indicators",
+    "Image is neutral; user hue, accent and optional complementary wash come from the material system",
+    "No generated UI or baked glass; original image retained separately from exports"
+  ]
+}

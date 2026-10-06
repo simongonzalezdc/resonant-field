@@ -1,0 +1,247 @@
+{
+  "schema": "resonant-field-runtime-contract",
+  "version": 3,
+  "scope": "Approved hosts may reuse these local visual-runtime hooks. They do not establish product, provider, trust, approval, or permission state.",
+  "loadOrder": [
+    "materials/volume.css",
+    "materials/geometry.css",
+    "materials/blend-controller.js",
+    "materials/finish-controller.js",
+    "materials/contrast-controller.js",
+    "materials/volume.js",
+    "materials/geometry.js",
+    "materials/world-sampler.js",
+    "materials/corner-controller.js",
+    "materials/asset-bank.js"
+  ],
+  "coreModules": {
+    "volume": {
+      "file": "materials/volume.js",
+      "global": "ResonantVolume",
+      "hooks": {
+        "mount": "mount(document) -> { mounted, surfaces, components, refresh, configure, setState, unmount }",
+        "configure": "configure({ plate, hue, chroma, toneAnchor, mode, brightness, position, selectiveColor, presence, backgroundPresence, solid, accentHue })",
+        "refresh": "refresh() -> render result",
+        "setState": "setState(element, state) -> resolved plan",
+        "resolve": "resolve(role, state, parent) -> pure immutable plan",
+        "inspect": "inspect() -> pure model snapshot",
+        "unmount": "unmount() -> disconnect observers and pending render timer"
+      },
+      "owns": [
+        "semantic role/state resolution",
+        "DOM material nodes",
+        "CSS custom properties",
+        "observers"
+      ],
+      "doesNotOwn": [
+        "localStorage",
+        "product state",
+        "trust or permission state",
+        "transport",
+        "readable copy"
+      ]
+    },
+    "worldSampler": {
+      "file": "materials/world-sampler.js",
+      "global": "ResonantWorldSampler",
+      "hooks": {
+        "refresh": "refresh() schedules a bounded scene rebuild",
+        "snapshot": "snapshot() -> current encoded samples/blobs/scene/appearance",
+        "inspect": "inspect() -> scene key, generation, status, scene timings, resource counts",
+        "configureHost": "configureHost({worldSelector,excludeSelector,ignoredHostSelector}) -> configured host selectors; use explicitly for legacy hosts",
+        "release": "release() -> cancels pending scene and releases sample resources; refresh() can restart"
+      },
+      "defaults": {
+        "worldSelector": "[data-volume-world]",
+        "worldRequirement": "exactly one visible world per host view with a direct-child .plate"
+      },
+      "hostRequirements": [
+        "one visible [data-volume-world]",
+        "direct child img.plate",
+        "ResonantVolume loaded before sampler"
+      ],
+      "fallbacks": [
+        "solid/readability mode clears sampling",
+        "bounded synchronous PNG encoding when convertToBlob is absent or slow",
+        "opaque Canvas/CanvasText in forced-colors"
+      ]
+    },
+    "geometry": {
+      "file": "materials/geometry.js",
+      "global": "ResonantGeometry",
+      "hooks": {
+        "configure": "configure(profile 0..4) -> stop descriptor",
+        "refresh": "refresh() schedules corner-only DOM update",
+        "resolve": "resolve(role, profile, width, height, parentRadius, inset, { edgeFollowing }) -> radius",
+        "inspect": "inspect() -> active profile/name/unit/factors",
+        "stops": "stops -> Precise, Crisp, Balanced, Soft, Round"
+      },
+      "scope": "Border-radius geometry only; parent-radius subtraction is opt-in with edgeFollowing:true and it does not paint material films or persist state."
+    },
+    "cornerController": {
+      "file": "materials/corner-controller.js",
+      "global": "ResonantCornerController",
+      "hooks": {
+        "create": "create({ geometry, onReadout, onPersist, eventTarget }) -> { apply }",
+        "apply": "apply(profile, { save, notify }) -> geometry.inspect()"
+      },
+      "hostBoundary": "eventTarget is an EventTarget for local CustomEvent notification only. The host supplies callbacks for state storage, any atomic/Blackboard postMessage transport, and human-readable demo text; the corner controller does not provide postMessage."
+    },
+    "assets": {
+      "files": [
+        "materials/asset-bank.js",
+        "materials/asset_pipeline.py"
+      ],
+      "hooks": {
+        "create": "ResonantAssetBank.create({document,idPrefix}).wrapPlate(plate)",
+        "encode": "encode_plate(validated_source_bytes, profile=None) -> lossless plate plus thumbnail bounded to 320\u00d7180 by default; plate-profile.json selects the collection\u2019s 1664\u00d7936 plates and 640\u00d7360 thumbnails"
+      },
+      "owns": [
+        "lazy offline plate access",
+        "lossless pixel-checked plate encoding",
+        "bounded gallery derivatives"
+      ],
+      "hostOwns": [
+        "source provenance validation",
+        "storage and source retention",
+        "content-addressed URLs and build integration"
+      ]
+    },
+    "blendController": {
+      "file": "materials/blend-controller.js",
+      "global": "ResonantBlendController",
+      "hooks": {
+        "normalize": "normalize(input) -> canonical blend settings",
+        "resolve": "resolve(input, depth) -> effective mode, amount and operation"
+      },
+      "hostBoundary": "Pure module; owns no DOM, storage, transport or product state."
+    },
+    "finishController": {
+      "file": "materials/finish-controller.js",
+      "global": "ResonantFinishController",
+      "hooks": {
+        "normalize": "normalize(input) -> bounded amount, spread and angle",
+        "gain": "gain(input, mode, plate) -> response scalar",
+        "hueSpan": "hueSpan(input) -> authored hue interval"
+      },
+      "hostBoundary": "Pure module; owns no DOM, storage, transport or product state."
+    },
+    "contrastController": {
+      "file": "materials/contrast-controller.js",
+      "global": "ResonantContrastController",
+      "hooks": {
+        "resolve": "resolve(RGBA pixels, mode) -> ink, overlay, alpha and contrast estimate"
+      },
+      "hostBoundary": "Pure module; owns no DOM, storage, transport or product state. Contrast sampling is an estimate, not a full accessibility certification."
+    }
+  },
+  "hostContract": {
+    "rootAppearanceTokens": {
+      "--material-hue": "degrees, normally 0..360",
+      "--material-chroma": "normalized chroma, normally 0..0.12",
+      "--tone-anchor": "normalized tone anchor",
+      "--plate-brightness": "positive exposure multiplier",
+      "--plate-position": "cover-image horizontal position, 0..100",
+      "--accent-hue": "degrees for localized state signal",
+      "--presence": "semantic material presence multiplier",
+      "--texture-opacity": "background/photo opacity, clamped to 0..1"
+    },
+    "rootAppearanceState": {
+      "data-mode": "dark or light",
+      "data-selective": "true when selective background color is enabled",
+      "data-solid": "true when the host requests the solid/readability fallback"
+    },
+    "legacyRuntimeAliases": {
+      "--rv-material-hue": "--material-hue",
+      "--rv-material-chroma": "--material-chroma",
+      "--rv-tone-anchor": "--tone-anchor",
+      "--rv-brightness": "--plate-brightness",
+      "--rv-position": "--plate-position",
+      "--rv-presence": "--presence",
+      "--rv-texture-opacity": "--texture-opacity",
+      "--rv-accent-hue": "--accent-hue",
+      "--rv-mode": "data-mode",
+      "--rv-selective-color": "data-selective"
+    },
+    "semanticAttributes": {
+      "data-volume-world": "exactly one visible sampling world per host view",
+      "data-volume-role": "atmosphere, context, workplane, reading, editor, control, primary, source-item, or overlay",
+      "data-volume-state": "resting, hover, focus, pressed, active, selected, inset, recessed, raised, floating, disabled, or error",
+      "data-volume-purpose": "optional authored purpose; decision-surface/review-action can select explicit depth",
+      "data-volume-incidence": "optional 0..1 reflection incidence"
+    },
+    "hostMust": [
+      "retain readable content in normal DOM",
+      "load core modules in dependency order",
+      "call mount(document) once",
+      "call sampler.refresh after appearance/plate changes",
+      "call unmount before removing the host document"
+    ],
+    "hostMay": [
+      "persist appearance/corner profile",
+      "post a local atomic/Blackboard message",
+      "choose controls and copy",
+      "use an approved local plate or data SVG"
+    ],
+    "hostMustNot": [
+      "infer meaning from sibling or column order",
+      "use proposal/demo IDs as integration hooks",
+      "put readable content into raster substrates",
+      "treat depth as permission or approval",
+      "send provider/business claims from this runtime"
+    ]
+  },
+  "optimizationDisposition": {
+    "rowMajorBlur": {
+      "file": "materials/world-sampler.js",
+      "reusable": true,
+      "note": "boxBlur traverses contiguous rows for horizontal and vertical passes with explicit channel sums."
+    },
+    "cacheAndDomReuse": {
+      "files": [
+        "materials/volume.js",
+        "materials/world-sampler.js"
+      ],
+      "reusable": true,
+      "note": "resolve plans, decoded images, blurred depth buffers, encoded base substrate, film nodes, and scene keys are reused within bounded ownership."
+    },
+    "encodedSubstrate": {
+      "file": "materials/world-sampler.js",
+      "reusable": true,
+      "note": "one encoded base substrate is retained for the same source/size/exposure key; it remains separate from readable DOM."
+    },
+    "boundedPngPolicy": {
+      "file": "materials/world-sampler.js",
+      "reusable": true,
+      "note": "Maximum one outstanding encode;250ms asynchronous deadline, same-pixel synchronous fallback, recovery after successful settlement within1000ms; stale generations discarded."
+    },
+    "cornerOnlyPath": {
+      "files": [
+        "materials/geometry.js",
+        "materials/corner-controller.js"
+      ],
+      "reusable": true,
+      "note": "corner profile changes update border-radius geometry without rebuilding material samples."
+    },
+    "assetLoading": {
+      "file": "materials/world-sampler.js",
+      "reusable": true,
+      "note": "same-origin local plate URLs or data SVGs are loaded through a three-entry decoded-image cache; approved hosts should avoid remote or unbounded data sources.",
+      "files": [
+        "materials/world-sampler.js",
+        "materials/asset-bank.js",
+        "materials/asset_pipeline.py"
+      ]
+    }
+  },
+  "verificationFixture": "verification/fixtures/host-smoke.html",
+  "optionalHostModules": {
+    "presetController": "materials/preset-controller.js",
+    "preferenceLearning": "materials/preference-learning.js",
+    "registries": [
+      "design-system/material-presets.json",
+      "design-system/appearance-defaults.json"
+    ],
+    "fonts": "design-system/tokens.css loads bundled licensed fonts; keep proposal/delivery-assets alongside runtime or rewrite URLs in the host bundle."
+  }
+}

@@ -1,0 +1,10 @@
+/* One owner for authored corners; renderer films inherit the host silhouette. */
+:root{--corner-unit:8px;--radius-control:var(--corner-unit);--radius-card:calc(var(--corner-unit)*2);--radius-inset:calc(var(--corner-unit)*1.5);--radius-overlay:calc(var(--corner-unit)*3)}
+.rv-surface,.rv-film,.rv-sheen,.rv-emission{border-radius:inherit!important}
+[data-corner-owner=harmonic-geometry]{--rv-radius:inherit}
+.corner-profile-help{font-size:11px;line-height:1.6;margin:6px 0 14px}
+.corner-family-preview{display:flex;gap:12px;align-items:end;margin-block:12px}
+.corner-family-preview span{display:block;border:1px solid var(--color-border);font-size:10px;padding:8px;min-height:44px}
+.corner-family-preview .corner-frame{width:90px;height:70px;border-radius:calc(var(--corner-unit)*2)}
+.corner-family-preview .corner-inset{width:70px;height:55px;border-radius:calc(var(--corner-unit)*1.5)}
+.corner-family-preview .corner-control{width:65px;height:44px;border-radius:var(--corner-unit)}

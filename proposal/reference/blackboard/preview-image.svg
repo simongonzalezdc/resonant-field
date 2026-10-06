@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">Local Blackboard image example</title>
+  <desc id="desc">A simple green circle with a friendly face on a dark background.</desc>
+  <rect width="900" height="560" fill="#0a0a0a"/>
+  <path d="M90 440H810" stroke="#262626" stroke-width="2"/>
+  <circle cx="450" cy="250" r="132" fill="#1a1a1a" stroke="#14F195" stroke-width="4"/>
+  <path d="M354 245h24m144 0h24M385 310q65 55 130 0" fill="none" stroke="#e5e5e5" stroke-width="10" stroke-linecap="round"/>
+  <text x="450" y="482" fill="#9b9b9b" font-family="sans-serif" font-size="24" text-anchor="middle">A local Blackboard image fixture</text>
+</svg>

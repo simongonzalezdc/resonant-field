@@ -1,0 +1,41 @@
+/* Adapter view only; pinned original Blackboard files stay byte-for-byte intact. */
+html,body{height:100%!important;min-height:0!important;margin:0!important;overflow:hidden!important;background:transparent!important}
+body.compound-surface{display:flex;flex-direction:column;color:var(--color-text);font-family:var(--rosi-font-system);font-size:14px;--text-primary:var(--color-text);--text-secondary:var(--color-text-secondary);--text-tertiary:var(--color-text-secondary);--border-subtle:var(--color-border);--border-default:var(--color-border)}
+#blackboard-toolbar{display:flex;flex:none;flex-direction:column;align-items:stretch;padding:12px 16px;gap:10px;height:auto;border-bottom:1px solid var(--color-border);background:transparent}
+.bb-title,.bb-toolbar-actions{display:none}.bb-mode-tabs{display:flex;flex-wrap:wrap;gap:6px}.compound-surface .bb-mode-tabs button{font-size:11px;min-height:44px;min-width:44px;padding:8px 14px;position:relative}
+#blackboard-surface{flex:1;min-height:0;position:relative;overflow:auto;padding:0;background:transparent}
+#bb-document-wrap{padding:32px clamp(20px,5vw,56px);max-width:none;margin:0;height:auto;min-height:100%;position:relative}
+#bb-document-content{max-width:68ch;margin-inline:auto;font:400 14px/1.8 var(--rosi-font-system);color:var(--color-text);background:transparent}
+#bb-document-content h1{font:650 32px/1.13 var(--font-display);letter-spacing:-.035em;line-height:1.15;margin:0 0 24px;color:var(--color-text)}
+#bb-document-content h2{font-size:19px;letter-spacing:-.02em;margin:28px 0 12px;color:var(--color-text)}
+#bb-document-content strong,#bb-document-content h3{color:var(--color-text)}
+#bb-document-content blockquote{border-left:2px solid var(--color-border);background:transparent;margin:24px 0;padding:12px 16px;color:var(--color-text)}
+#bb-document-content code,#bb-document-content pre{background:transparent;color:var(--color-text)}
+#bb-canvas-wrap{min-height:100%;background:transparent}#bb-canvas{background:transparent!important}
+#bb-table-wrap{padding:24px 20px;min-height:100%;position:relative}#bb-table-title{color:var(--color-text);font-family:var(--font-display);font-size:24px}
+#bb-data-table{background:transparent;color:var(--color-text);font-family:var(--rosi-font-system)}#bb-data-table th,#bb-data-table td{background:transparent!important;color:var(--color-text)!important;border-color:var(--color-border)!important;padding:14px 12px}
+#bb-data-table tbody tr:hover{background:transparent!important}#bb-present-wrap{padding:24px 20px;min-height:100%;background:transparent}#bb-slide{background:transparent!important;color:var(--color-text)!important;padding:24px}#bb-slide-title{color:var(--color-text);font-family:var(--font-display)}#bb-slide-content{color:var(--color-text)}
+#bb-image-wrap{background:transparent;min-height:100%;padding:24px}.bb-welcome,.bb-welcome h2,.bb-welcome p{color:var(--color-text);background:transparent}
+.compound-frame-foot{font-size:10px;padding:8px 16px;border-top:1px solid var(--color-border);opacity:.7;flex:none}
+.compound-surface [data-volume-rendered]>*:not(.rv-surface):not(.rv-local-emission){position:relative;z-index:1}
+.compound-surface [data-volume-rendered]{isolation:isolate}
+@media(max-width:450px){#bb-document-wrap{padding:24px 18px}#bb-document-content{font-size:13px}#bb-document-content h1{font-size:28px}.compound-surface .bb-mode-tabs button{font-size:10px;padding-inline:10px}#bb-table-wrap{padding:16px 12px}#bb-data-table th,#bb-data-table td{font-size:11px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){.bb-fadein{animation:none!important;transition:none!important}}
+
+body.compound-surface{--rosi-border-subtle:var(--color-border);--rosi-border-default:var(--color-border);--rosi-border-glow:oklch(.72 .07 calc(var(--material-hue)*1deg))}[data-mode=light] body.compound-surface{--rosi-border-glow:oklch(.43 .07 calc(var(--material-hue)*1deg))}
+/* The original preview reserves room for its capsule; the compound view owns chrome. */
+#blackboard-toolbar{position:relative!important;inset:auto!important;backdrop-filter:none!important;z-index:2}
+#blackboard-surface{inset:auto!important;margin:0!important}
+.compound-surface .bb-mode-tabs button.active{color:var(--color-text);background-color:transparent}
+
+body.compound-surface .compound-frame-foot{background:transparent;color:var(--color-text);position:relative;z-index:1}
+
+body.compound-surface .compound-frame-foot{opacity:1;color:var(--color-text)}
+
+/* Retained fade-in transforms can omit iframe text in native captures. */
+.compound-surface .bb-fadein{animation:none!important;transform:none!important;opacity:1!important}
+
+/* Markdown already has block margins; separator BRs must not add another blank line. */
+#bb-document-content>br{display:none}
+#bb-document-content p{margin:0 0 16px}
+.compound-surface .bb-mode-tabs button.active::after{content:"";position:absolute;inset:auto 12px 3px;height:2px;background:var(--accent-color);pointer-events:none}

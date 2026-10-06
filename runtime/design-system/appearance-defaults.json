@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "scope": "Complete appearance defaults, separate from material-only palette buttons",
+  "source_reference": "reference/rosi/atomic-spec.md and tokens.css, pinned v0.3",
+  "decision": "Defaults are candidates until real rendered QA. Preference learning is authorized and enabled locally; manual overrides win. Accessibility preferences never inferred from aesthetics.",
+  "presets": [
+    {
+      "id": "rosi-bridge",
+      "name": "ROSI / familiar",
+      "values": {
+        "mode": "dark",
+        "plate": "plain",
+        "hue": 155,
+        "strength": 16,
+        "accent": 165,
+        "accentLinked": false,
+        "selectiveColor": false,
+        "intensity": 0,
+        "position": 50,
+        "brightness": 70,
+        "surfaceLight": 0,
+        "accentLight": 15,
+        "solid": false,
+        "cornerProfile": 2,
+        "learningEnabled": true,
+        "adaptiveAppearance": true
+      },
+      "rationale": "Pinned ROSI v0.3 uses green-warm dark surfaces, Coherent Verdant accent and no photographic ground. Use a manual green accent rather than the Field split complement; balanced geometry approximates its 8/12/16/24px family. A rendered fit is required; this is not token equivalence.",
+      "status": "Candidate for rendered contrast and visual review; no popularity claim",
+      "palette_fit": {
+        "receipt": "../evidence/craft-20261002/default-fit.json",
+        "candidate_count": 12,
+        "rgb_rmse": 6.708,
+        "scope": "Bounded rendered palette fit, not token or component equivalence"
+      }
+    },
+    {
+      "id": "quiet-graphite",
+      "name": "Quiet / graphite",
+      "values": {
+        "mode": "dark",
+        "plate": "plain",
+        "hue": 0,
+        "strength": 0,
+        "accent": 150,
+        "accentLinked": true,
+        "selectiveColor": false,
+        "intensity": 0,
+        "position": 50,
+        "brightness": 70,
+        "surfaceLight": 50,
+        "accentLight": 50,
+        "solid": false,
+        "cornerProfile": 2,
+        "learningEnabled": true,
+        "adaptiveAppearance": true
+      },
+      "rationale": "Neutral surfaces, independent green signal and no image reduce visual competition. Geometry and semantic contrast remain unchanged.",
+      "status": "Candidate for rendered contrast and visual review; no popularity claim"
+    },
+    {
+      "id": "verdant-field",
+      "name": "Field / verdant",
+      "values": {
+        "mode": "dark",
+        "plate": "forest",
+        "hue": 165,
+        "strength": 24,
+        "accent": 315,
+        "accentLinked": true,
+        "selectiveColor": false,
+        "intensity": 40,
+        "position": 50,
+        "brightness": 70,
+        "surfaceLight": 50,
+        "accentLight": 50,
+        "solid": false,
+        "cornerProfile": 2,
+        "learningEnabled": true,
+        "adaptiveAppearance": true
+      },
+      "rationale": "Related green material voices, restrained photograph and a split-complement accent show the extension without maximum saturation.",
+      "status": "Candidate for rendered contrast and visual review; no popularity claim"
+    },
+    {
+      "id": "daylight-field",
+      "name": "Field / daylight",
+      "values": {
+        "mode": "light",
+        "plate": "vellum-fold-v2",
+        "hue": 165,
+        "strength": 16,
+        "accent": 315,
+        "accentLinked": true,
+        "selectiveColor": false,
+        "intensity": 30,
+        "position": 50,
+        "brightness": 70,
+        "surfaceLight": 50,
+        "accentLight": 35,
+        "solid": false,
+        "cornerProfile": 2,
+        "learningEnabled": true,
+        "adaptiveAppearance": true
+      },
+      "rationale": "Lower material chroma and restrained canvas presence keep dark reading ink clear; light-mode contrast must be measured.",
+      "status": "Candidate for rendered contrast and visual review; no popularity claim"
+    }
+  ]
+}

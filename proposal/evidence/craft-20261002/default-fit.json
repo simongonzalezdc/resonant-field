@@ -1,0 +1,322 @@
+{
+  "artifact_sha256": "322f947f95694fda0543bdeaa2b3eaefc3c249edc587e638149950c4c1212fca",
+  "targets": {
+    "0": [
+      15,
+      20,
+      17
+    ],
+    "2": [
+      19,
+      26,
+      22
+    ],
+    "4": [
+      27,
+      35,
+      30
+    ]
+  },
+  "metric": "RGB RMSE of depth0/depth2/depth4 against pinned ROSI base/composited raised/composited overlay. This is a bounded palette fit, not perceptual or component equivalence.",
+  "best": {
+    "hue": 155,
+    "strength": 16,
+    "surfaceLight": 0,
+    "pixels": {
+      "0": [
+        21,
+        22,
+        19
+      ],
+      "2": [
+        29,
+        36,
+        32
+      ],
+      "4": [
+        30,
+        41,
+        34
+      ]
+    },
+    "rgb_rmse": 6.708
+  },
+  "candidates": [
+    {
+      "hue": 155,
+      "strength": 8,
+      "surfaceLight": 0,
+      "pixels": {
+        "0": [
+          22,
+          22,
+          20
+        ],
+        "2": [
+          32,
+          35,
+          34
+        ],
+        "4": [
+          35,
+          40,
+          37
+        ]
+      },
+      "rgb_rmse": 8.124
+    },
+    {
+      "hue": 155,
+      "strength": 8,
+      "surfaceLight": 10,
+      "pixels": {
+        "0": [
+          22,
+          23,
+          21
+        ],
+        "2": [
+          33,
+          37,
+          34
+        ],
+        "4": [
+          36,
+          41,
+          37
+        ]
+      },
+      "rgb_rmse": 8.825
+    },
+    {
+      "hue": 155,
+      "strength": 8,
+      "surfaceLight": 20,
+      "pixels": {
+        "0": [
+          23,
+          24,
+          22
+        ],
+        "2": [
+          35,
+          40,
+          36
+        ],
+        "4": [
+          39,
+          46,
+          40
+        ]
+      },
+      "rgb_rmse": 11.146
+    },
+    {
+      "hue": 155,
+      "strength": 16,
+      "surfaceLight": 0,
+      "pixels": {
+        "0": [
+          21,
+          22,
+          19
+        ],
+        "2": [
+          29,
+          36,
+          32
+        ],
+        "4": [
+          30,
+          41,
+          34
+        ]
+      },
+      "rgb_rmse": 6.708
+    },
+    {
+      "hue": 155,
+      "strength": 16,
+      "surfaceLight": 10,
+      "pixels": {
+        "0": [
+          22,
+          23,
+          20
+        ],
+        "2": [
+          30,
+          38,
+          34
+        ],
+        "4": [
+          31,
+          44,
+          36
+        ]
+      },
+      "rgb_rmse": 8.226
+    },
+    {
+      "hue": 155,
+      "strength": 16,
+      "surfaceLight": 20,
+      "pixels": {
+        "0": [
+          23,
+          24,
+          20
+        ],
+        "2": [
+          32,
+          40,
+          34
+        ],
+        "4": [
+          34,
+          46,
+          37
+        ]
+      },
+      "rgb_rmse": 9.528
+    },
+    {
+      "hue": 165,
+      "strength": 8,
+      "surfaceLight": 0,
+      "pixels": {
+        "0": [
+          21,
+          22,
+          21
+        ],
+        "2": [
+          32,
+          35,
+          34
+        ],
+        "4": [
+          34,
+          40,
+          37
+        ]
+      },
+      "rgb_rmse": 7.979
+    },
+    {
+      "hue": 165,
+      "strength": 8,
+      "surfaceLight": 10,
+      "pixels": {
+        "0": [
+          22,
+          23,
+          21
+        ],
+        "2": [
+          33,
+          37,
+          35
+        ],
+        "4": [
+          36,
+          41,
+          39
+        ]
+      },
+      "rgb_rmse": 9.177
+    },
+    {
+      "hue": 165,
+      "strength": 8,
+      "surfaceLight": 20,
+      "pixels": {
+        "0": [
+          23,
+          24,
+          22
+        ],
+        "2": [
+          35,
+          40,
+          36
+        ],
+        "4": [
+          37,
+          46,
+          41
+        ]
+      },
+      "rgb_rmse": 11.03
+    },
+    {
+      "hue": 165,
+      "strength": 16,
+      "surfaceLight": 0,
+      "pixels": {
+        "0": [
+          21,
+          23,
+          19
+        ],
+        "2": [
+          29,
+          37,
+          33
+        ],
+        "4": [
+          28,
+          41,
+          36
+        ]
+      },
+      "rgb_rmse": 7.18
+    },
+    {
+      "hue": 165,
+      "strength": 16,
+      "surfaceLight": 10,
+      "pixels": {
+        "0": [
+          21,
+          23,
+          20
+        ],
+        "2": [
+          29,
+          38,
+          34
+        ],
+        "4": [
+          30,
+          44,
+          37
+        ]
+      },
+      "rgb_rmse": 8.035
+    },
+    {
+      "hue": 165,
+      "strength": 16,
+      "surfaceLight": 20,
+      "pixels": {
+        "0": [
+          22,
+          24,
+          21
+        ],
+        "2": [
+          31,
+          40,
+          37
+        ],
+        "4": [
+          32,
+          46,
+          40
+        ]
+      },
+      "rgb_rmse": 9.955
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+@font-face{font-family:"Bricolage Grotesque";font-style:normal;font-weight:700;src:url("../../proposal/delivery-assets/asset-bricolage-700-20f4eb12fb9cbb7a.woff2") format("woff2");font-display:swap;}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:400;src:url("../../proposal/delivery-assets/asset-hanken-400-294ebb02701a5653.woff2") format("woff2");font-display:swap;}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:600;src:url("../../proposal/delivery-assets/asset-hanken-600-0d8f4feb4c9f790d.woff2") format("woff2");font-display:swap;}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:800;src:url("../../proposal/delivery-assets/asset-hanken-800-3bb458ea2bcba12e.woff2") format("woff2");font-display:swap;}
+
+/* Resonant Field: primitive ramps, semantic roles, and task-bound material extensions.
+   Material pigments and interaction signals have separate chroma budgets. */
+:root {
+  --material-hue: 260;
+  --accent-hue: 230;
+  --material-chroma: 0.054;
+  --signal-chroma: 0.11;
+  --surface-lightness: 0.26;
+  --raised-lightness: 0.3;
+  --accent-lightness: 0.82;
+
+  --neutral-50: oklch(0.98 0 0);
+  --neutral-100: oklch(0.94 0 0);
+  --neutral-200: oklch(0.86 0 0);
+  --neutral-300: oklch(0.75 0 0);
+  --neutral-400: oklch(0.64 0 0);
+  --neutral-500: oklch(0.54 0 0);
+  --neutral-600: oklch(0.44 0 0);
+  --neutral-700: oklch(0.35 0 0);
+  --neutral-800: oklch(0.27 0 0);
+  --neutral-900: oklch(0.2 0 0);
+  --neutral-950: oklch(0.145 0 0);
+  --brand-50: oklch(0.97 0.008 var(--material-hue));
+  --brand-100: oklch(0.92 0.018 var(--material-hue));
+  --brand-200: oklch(0.85 0.028 var(--material-hue));
+  --brand-300: oklch(0.77 0.042 var(--material-hue));
+  --brand-400: oklch(0.67 0.06 var(--material-hue));
+  --brand-500: oklch(0.58 0.068 var(--material-hue));
+  --brand-600: oklch(0.48 0.06 var(--material-hue));
+  --brand-700: oklch(0.39 0.046 var(--material-hue));
+  --brand-800: oklch(0.29 0.03 var(--material-hue));
+  --brand-900: oklch(0.215 0.02 var(--material-hue));
+  --accent-300: oklch(0.88 calc(var(--signal-chroma) * 0.32) var(--accent-hue));
+  --accent-400: oklch(0.82 calc(var(--signal-chroma) * 0.55) var(--accent-hue));
+  --accent-500: oklch(0.69 calc(var(--signal-chroma) * 0.86) var(--accent-hue));
+  --accent-600: oklch(0.52 var(--signal-chroma) var(--accent-hue));
+  --accent-700: oklch(0.39 calc(var(--signal-chroma) * 0.77) var(--accent-hue));
+
+  --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body:
+    "Hanken Grotesk", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --step--2: 0.75rem;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 1.25rem + 0.45vw, 1.75rem);
+  --step-3: clamp(1.875rem, 1.5rem + 0.8vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.75rem + 1.25vw, 3.25rem);
+  --step-5: clamp(2.75rem, 2rem + 2vw, 4.25rem);
+  --measure: 66ch;
+  --measure-conversation: 58ch;
+  --leading-reading: 1.65;
+  --leading-ui: 1.45;
+  --leading-heading: 1.12;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-section: clamp(3rem, 2rem + 4vw, 6rem);
+  --radius-control: 0.25rem;
+  --radius-card: 0.125rem;
+  --radius-pill: 999px;
+  --edge-width: 1px;
+  --seam-width: 2px;
+  --shadow-card: 0 8px 24px rgb(0 0 0 / 0.12);
+  --shadow-float: 0 24px 72px rgb(0 0 0 / 0.32);
+  --dur-fast: 140ms;
+  --dur-base: 200ms;
+  --dur-slow: 280ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --color-substrate: #191919;
+  --color-paper-highlight: #dedede;
+  --color-preview-empty: #3a3a3a;
+  --color-ground-shade: rgb(0 0 0 / 0.1);
+  --color-bg: #141414;
+  --color-surface-1: oklch(
+    var(--surface-lightness) calc(var(--material-chroma) * 0.68)
+      var(--material-hue)
+  );
+  --color-surface-2: oklch(
+    var(--raised-lightness) calc(var(--material-chroma) * 0.8)
+      var(--material-hue)
+  );
+  --color-surface-3: oklch(
+    calc(var(--raised-lightness) + 0.035) var(--material-chroma)
+      var(--material-hue)
+  );
+  --color-text: #f0f0f0;
+  --color-text-muted: #d6d6d6;
+  --color-border: rgb(242 242 242 / 0.24);
+  --color-border-control: rgb(242 242 242 / 0.6);
+  --color-border-strong: rgb(242 242 242 / 0.46);
+  --accent-color: var(--color-primary);
+  --color-primary: oklch(var(--accent-lightness) var(--signal-chroma) var(--accent-hue));
+  --color-primary-hover: oklch(
+    calc(var(--accent-lightness) + 0.025) var(--signal-chroma) var(--accent-hue)
+  );
+  --color-primary-ink: #1b1b1b;
+  --color-accent: var(--color-primary);
+  --color-accent-ink: var(--color-primary-ink);
+  --color-focus: #e8f1ff;
+  --color-success: #a8d9bb;
+  --color-error: #ffbdc1;
+  --color-warning: #ead1a0;
+  --color-info: #b7d7f0;
+  --color-paper: #f2f2f2;
+  --color-paper-ink: #262626;
+  --color-paper-muted: #565656;
+  --color-paper-border: #c8c8c8;
+  --color-material-1: oklch(
+    0.38 var(--material-chroma) var(--material-hue) / 0.18
+  );
+  --color-material-2: oklch(
+    0.34 var(--material-chroma) var(--material-hue) / 0.32
+  );
+  --color-material-3: oklch(
+    0.3 var(--material-chroma) var(--material-hue) / 0.48
+  );
+  --color-chrome: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
+  --color-chrome-muted: #e3e3e3;
+  --color-reading: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
+  --color-control: color-mix(in srgb, var(--color-surface-2) 94%, transparent);
+  --color-decision: color-mix(in srgb, var(--color-surface-3) 96%, transparent);
+  --color-key-light: rgb(255 255 255 / 0.2);
+  --color-under-edge: rgb(0 0 0 / 0.32);
+  --blur-panel: 6px;
+  --blur-decision: 12px;
+  --texture-opacity: 0.6;
+  --plate-brightness: 0.7;
+  --plate-position: 50%;
+  color-scheme: dark;
+}
+
+[data-mode="light"] {
+  --color-bg: #eeeef0;
+  --color-text: #272727;
+  --color-text-muted: #3c3c3c;
+  --color-chrome-muted: #363636;
+  --color-border: rgb(30 30 30 / 0.25);
+  --color-border-strong: rgb(30 30 30 / 0.46);
+  --color-border-control: rgb(30 30 30 / 0.58);
+  --color-primary-ink: #fcfcfc;
+  --color-focus: #182d49;
+  --color-success: #1f4d30;
+  --color-error: #8b2431;
+  --color-warning: #654517;
+  --color-info: #254c6d;
+  --color-material-1: oklch(
+    0.89 var(--material-chroma) var(--material-hue) / 0.24
+  );
+  --color-material-2: oklch(
+    0.85 var(--material-chroma) var(--material-hue) / 0.38
+  );
+  --color-material-3: oklch(
+    0.81 var(--material-chroma) var(--material-hue) / 0.52
+  );
+  --color-key-light: rgb(255 255 255 / 0.66);
+  --color-under-edge: rgb(36 36 36 / 0.18);
+  --shadow-card: 0 8px 24px rgb(26 29 37 / 0.09);
+  --shadow-float: 0 24px 72px rgb(26 29 37 / 0.18);
+  color-scheme: light;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: var(--color-border-strong);
+  }
+}
+
+/* The resolver owns tone at runtime; this default keeps host reads defined. */
+:root {
+  --tone-anchor: .26;
+}

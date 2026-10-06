@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en" data-mode="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resonant Field local host smoke fixture</title>
+    <link rel="stylesheet" href="../../materials/volume.css">
+    <link rel="stylesheet" href="../../materials/geometry.css">
+    <style>
+      :root {
+        color-scheme: dark;
+        --material-hue: 256;
+        --material-chroma: .054;
+        --tone-anchor: .26;
+        --plate-brightness: .7;
+        --plate-position: 50;
+        --accent-hue: 230;
+        --accent-color: oklch(.76 .11 230);
+        font: 16px/1.45 system-ui, sans-serif;
+        color: #f4f5f6;
+        background: #171a1e;
+      }
+      *, *::before, *::after { box-sizing: border-box; }
+      body { margin: 0; min-block-size: 100vh; padding: 24px; }
+      header { margin: 0 auto 16px; max-inline-size: 960px; }
+      h1, p { margin: 0; }
+      h1 { font-size: 1.2rem; }
+      header p { color: #bac1c8; font-size: .85rem; }
+      [data-volume-world] {
+        position: relative;
+        isolation: isolate;
+        inline-size: min(960px, 100%);
+        block-size: 540px;
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid rgb(255 255 255 / .28);
+        border-radius: 16px;
+        background: rgb(16 18 22 / .2);
+      }
+      .plate {
+        position: absolute;
+        inset: 0;
+        z-index: -5;
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+        filter: grayscale(1) brightness(var(--plate-brightness));
+      }
+      .semantic-node {
+        position: absolute;
+        overflow: hidden;
+        padding: 14px;
+        border: 1px solid rgb(255 255 255 / .2);
+        color: inherit;
+      }
+      #atmosphere { inset: 14px; }
+      #reading { inset: 34px auto auto 34px; inline-size: 43%; block-size: 42%; }
+      #workplane { inset: auto 34px 34px auto; inline-size: 46%; block-size: 45%; }
+      #control { inset: 55px 42%; min-inline-size: 120px; }
+      #overlay { inset: 18px 18px auto auto; inline-size: 160px; block-size: 66px; }
+      .semantic-node h2 { margin: 0 0 4px; font-size: .9rem; }
+      .semantic-node p { color: #d7dce1; font-size: .78rem; }
+      #control { cursor: pointer; font: inherit; color: inherit; }
+      [data-volume-role="overlay"] { pointer-events: none; }
+      #fixture-status { max-inline-size: 960px; margin: 16px auto 0; color: #bac1c8; font: .75rem/1.4 ui-monospace, monospace; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Local host portability smoke test</h1>
+      <p>Standalone fixture for semantic material runtime contracts. No product, provider, or business state is represented.</p>
+    </header>
+    <main>
+      <section id="hostWorld" data-volume-world aria-label="Local host material world">
+        <img class="plate" alt="" aria-hidden="true" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='200' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%236d7378'/%3E%3Cpath d='M0 34h320M0 103h320M54 0v200M224 0v200' stroke='%23c7cdd1' stroke-width='9' opacity='.5'/%3E%3Ccircle cx='260' cy='55' r='31' fill='%23474d52'/%3E%3C/svg%3E">
+        <article id="atmosphere" class="semantic-node" data-volume-role="atmosphere" data-volume-state="resting">
+          <h2>Atmosphere / depth 0</h2><p>Real DOM text remains outside raster samples.</p>
+        </article>
+        <article id="reading" class="semantic-node" data-volume-role="reading" data-volume-state="resting">
+          <h2>Reading / depth 1</h2><p>Semantic role controls the plane.</p>
+        </article>
+        <article id="workplane" class="semantic-node" data-volume-role="workplane" data-volume-state="resting">
+          <h2>Workplane / depth 2</h2><p>Sibling order is not the depth contract.</p>
+        </article>
+        <button id="control" class="semantic-node" data-volume-role="control" data-volume-state="resting" type="button">Control / depth 3</button>
+        <aside id="overlay" class="semantic-node" data-volume-role="overlay" data-volume-state="resting" aria-label="Overlay depth 4">Overlay / depth 4</aside>
+      </section>
+    </main>
+    <pre id="fixture-status" aria-live="polite">booting</pre>
+
+    <script src="../../materials/volume.js"></script>
+    <script src="../../materials/geometry.js"></script>
+    <script src="../../materials/world-sampler.js"></script>
+    <script src="../../materials/corner-controller.js"></script>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const nodes = [...document.querySelectorAll('[data-volume-role]')];
+        const events = [];
+        const stored = (() => {
+          try { return JSON.parse(localStorage.getItem('system3-host-smoke') || '{}'); }
+          catch { return {}; }
+        })();
+        const hostState = { appearance: {}, cornerProfile: Number.isInteger(stored.cornerProfile) ? stored.cornerProfile : 2 };
+        const persist = snapshot => {
+          hostState.cornerProfile = snapshot.index;
+          try { localStorage.setItem('system3-host-smoke', JSON.stringify({ cornerProfile: snapshot.index })); }
+          catch { /* file fixtures may expose an opaque origin; the in-memory host state remains valid. */ }
+          events.push({ type: 'persist', profile: snapshot.index });
+        };
+        const notify = snapshot => {
+          events.push({ type: 'readout', profile: snapshot.index, unit: snapshot.unit });
+          window.postMessage({ type: 'resonant-geometry-applied', payload: snapshot }, '*');
+        };
+        const corner = ResonantCornerController.create({
+          geometry: ResonantGeometry,
+          onReadout: notify,
+          onPersist: persist,
+          eventTarget: window,
+        });
+        const mount = ResonantVolume.mount(document);
+        const setAppearance = options => {
+          const next = { ...options };
+          hostState.appearance = { ...hostState.appearance, ...next };
+          for (const [name, value] of Object.entries({
+            '--material-hue': next.hue,
+            '--material-chroma': next.chroma,
+            '--tone-anchor': next.toneAnchor,
+            '--plate-brightness': next.brightness,
+            '--plate-position': next.position,
+          })) if (value !== undefined) root.style.setProperty(name, String(value));
+          if (next.mode === 'dark' || next.mode === 'light') root.dataset.mode = next.mode;
+          if (next.solid !== undefined) root.dataset.solid = String(Boolean(next.solid));
+          ResonantVolume.configure(next);
+          ResonantWorldSampler.refresh();
+          return ResonantWorldSampler.inspect();
+        };
+        const stateSweep = () => ({
+          baseDepths: nodes.map(node => Number(node.dataset.volumeDepth)),
+          roles: nodes.map(node => node.dataset.volumeRole),
+          probes: ['resting', 'hover', 'focus', 'pressed', 'selected'].map((state, index) => ({
+            state,
+            depth: ResonantVolume.resolve(nodes[index].dataset.volumeRole, state).depth,
+          })),
+        });
+        window.HostSmoke = {
+          core: { mounted: mount.mounted, nodeCount: nodes.length, modules: ['volume', 'geometry', 'world-sampler'] },
+          events,
+          setAppearance,
+          setCorner: profile => corner.apply(profile, { save: true, notify: true }),
+          setState: (node, state) => ResonantVolume.setState(document.getElementById(node), state),
+          stateSweep,
+          inspect: () => ({
+            core: window.HostSmoke.core,
+            corner: ResonantGeometry.inspect(),
+            sampler: ResonantWorldSampler.inspect(),
+            depths: nodes.map(node => ({ id: node.id, role: node.dataset.volumeRole, state: node.dataset.volumeState, depth: node.dataset.volumeDepth })),
+          }),
+          teardown: () => {
+            ResonantVolume.unmount();
+            const event = typeof PageTransitionEvent === 'function' ? new PageTransitionEvent('pagehide', { persisted: false }) : new Event('pagehide');
+            window.dispatchEvent(event);
+            return { mounted: false, sampler: ResonantWorldSampler.inspect() };
+          },
+        };
+        setAppearance({ mode: 'dark', hue: 256, chroma: .054, toneAnchor: .26, brightness: .7, position: 50, solid: false });
+        corner.apply(hostState.cornerProfile, { save: false, notify: false });
+        document.getElementById('fixture-status').textContent = JSON.stringify(window.HostSmoke.inspect(), null, 2);
+      })();
+    </script>
+  </body>
+</html>
