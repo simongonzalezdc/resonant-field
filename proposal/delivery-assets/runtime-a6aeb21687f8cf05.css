@@ -5143,15 +5143,18 @@ html[data-surface=combined] #appStatus label{display:none}
   button.rv-component.primary:not(:disabled) { color: var(--color-text) !important; }
 }
 
-/* Thinking disclosures in the material conversation need their own content inset. */
-.compound-thread .think > summary {
-  padding: 12px 16px;
-  min-height: 44px;
+/* Disclosure controls share the material panel treatment and a safe text inset. */
+summary.rv-component {
+  box-sizing: border-box;
+  padding: 12px 16px !important;
+  min-block-size: 44px;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
-.compound-thread .think > pre {
+
+summary.rv-component ~ pre {
   margin: 0;
-  padding: 0 16px 16px;
+  padding: 12px 16px !important;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
