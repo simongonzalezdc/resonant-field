@@ -45,7 +45,7 @@
       "file": "materials/world-sampler.js",
       "global": "ResonantWorldSampler",
       "hooks": {
-        "refresh": "refresh() schedules a bounded scene rebuild",
+        "refresh": "refresh(immediate = false) coalesces a scene update; true paints a prepared scene immediately",
         "snapshot": "snapshot() -> current encoded samples/blobs/scene/appearance",
         "inspect": "inspect() -> scene key, generation, status, scene timings, resource counts",
         "configureHost": "configureHost({worldSelector,excludeSelector,ignoredHostSelector}) -> configured host selectors; use explicitly for legacy hosts",

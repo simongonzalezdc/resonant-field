@@ -65,9 +65,10 @@ try{
   await page.setViewportSize({width,height:900});
   for(const route of ['proposal','app','design-system','combined']){
    await page.goto(origin+'/proposal/resonant-field-proposal.html#'+route,{waitUntil:'networkidle'});
+   await page.waitForFunction(route=>{const root=document.documentElement;return root.dataset.view===(route==='proposal'?'proposal':route==='design-system'?'library':'app')&&(route!=='app'||root.dataset.surface==='workspace')&&(route!=='combined'||root.dataset.surface==='combined')&&ResonantWorldSampler.isCurrent();},route,{timeout:30000});
    const row=await page.evaluate(()=>({view:document.documentElement.dataset.view,overflow:document.documentElement.scrollWidth>innerWidth+1,missing:[...document.images].filter(i=>i.currentSrc&&i.complete&&!i.naturalWidth).length}));
    result.responsive.push({width,route,...row});
-   if(row.overflow||row.missing)result.errors.push('Responsive failure '+width+' '+route);
+   if(row.overflow||row.missing||row.view!==(route==='proposal'?'proposal':route==='design-system'?'library':'app'))result.errors.push('Responsive failure '+width+' '+route);
   }
  }
  await page.setViewportSize({width:1440,height:1000});

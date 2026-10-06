@@ -10,7 +10,7 @@
     if(edgeFollowing===true && parentRadius!==null)radius=Math.min(radius,Math.max(0,parentRadius-inset));
     return Number(radius.toFixed(3));
   }
-  const doc=global.document;let index=2,pending=false;
+  const doc=global.document;let index=2,pending=0;
   function excluded(e){return Boolean(e.closest('.aug-source-panel,#sourcePaper,#proposalBaselines'));}
   function roleFor(e){
     if(e.dataset.cornerRole)return e.dataset.cornerRole;
@@ -26,23 +26,39 @@
     if(!doc)return;
     const root=doc.documentElement;root.style.setProperty('--corner-unit',String(8*stops[index].scale)+'px');root.dataset.cornerProfile=String(index);
     const selector='[data-volume-role],button,select,textarea,input[type=text],.tag,.badge,.compound-badge,.compound-editor-well,.optical-sample,.sample-card';
+    const measures=[];
     for(const e of doc.querySelectorAll(selector)){
       if(excluded(e)||e.matches('input[type=range],input[type=checkbox],input[type=file],svg'))continue;
       const w=e.offsetWidth,h=e.offsetHeight;if(!w||!h)continue;
-      const role=roleFor(e);let parentRadius=null,inset=0;
-      const edgeFollowing=e.dataset.cornerEdgeFollowing==='true';
-      if(edgeFollowing){
-        const parent=e.parentElement.closest('[data-corner-radius]');
-        if(parent){const a=e.getBoundingClientRect(),b=parent.getBoundingClientRect();parentRadius=Number(parent.dataset.cornerRadius);inset=Math.max(0,Math.min(a.left-b.left,a.top-b.top,b.right-a.right,b.bottom-a.bottom));}
-      }
-      const radius=resolve(role,index,w,h,parentRadius,inset,{edgeFollowing}),value=radius+'px';
-      e.dataset.cornerKind=role;e.dataset.cornerRadius=String(radius);e.dataset.cornerOwner='harmonic-geometry';
+      const role=roleFor(e),edgeFollowing=e.dataset.cornerEdgeFollowing==='true';
+      const parent=edgeFollowing?e.parentElement.closest('[data-corner-radius]'):null;
+      measures.push({e,w,h,role,edgeFollowing,parent,rect:parent?e.getBoundingClientRect():null,parentRect:parent?parent.getBoundingClientRect():null});
+    }
+    // New ancestors have no radius attribute until the write phase.
+    const measured=new Set(measures.map(m=>m.e));
+    for(const m of measures)if(m.edgeFollowing){
+      let parent=m.e.parentElement;
+      while(parent && !measured.has(parent) && !parent.hasAttribute('data-corner-radius'))parent=parent.parentElement;
+      m.parent=parent;m.rect=parent?m.e.getBoundingClientRect():null;m.parentRect=parent?parent.getBoundingClientRect():null;
+    }
+    const radii=new Map(),updates=[];
+    for(const m of measures){
+      const {e,w,h,role,edgeFollowing,parent,rect:a,parentRect:b}=m;
+      const parentRadius=parent?(radii.get(parent)??Number(parent.dataset.cornerRadius)):null;
+      const inset=parent?Math.max(0,Math.min(a.left-b.left,a.top-b.top,b.right-a.right,b.bottom-a.bottom)):0;
+      const radius=resolve(role,index,w,h,parentRadius,inset,{edgeFollowing});radii.set(e,radius);updates.push({e,role,radius});
+    }
+    for(const {e,role,radius} of updates){
+      const value=radius+'px';
+      if(e.dataset.cornerKind!==role)e.dataset.cornerKind=role;
+      if(e.dataset.cornerRadius!==String(radius))e.dataset.cornerRadius=String(radius);
+      if(e.dataset.cornerOwner!=='harmonic-geometry')e.dataset.cornerOwner='harmonic-geometry';
       if(e.style.getPropertyValue('border-radius')!==value)e.style.setProperty('border-radius',value,'important');
     }
   }
-  function schedule(){if(pending||!doc)return;pending=true;global.queueMicrotask(()=>{pending=false;apply();});}
-  function configure(value){index=indexOf(value);apply();return stops[index];}
+  function schedule(){if(pending||!doc)return;pending=global.requestAnimationFrame(()=>{pending=0;apply();});}
+  function configure(value){const next=indexOf(value);if(next===index)schedule();else{index=next;apply();}return stops[index];}
   const api={resolve,configure,refresh:schedule,stops,factors,inspect:()=>({index,name:stops[index].name,unit:8*stops[index].scale,factors})};
   global.ResonantGeometry=api;if(typeof module==='object'&&module.exports)module.exports=api;
-  if(doc){global.addEventListener('resize',schedule);global.addEventListener('resonant-volume-rendered',schedule);doc.addEventListener('DOMContentLoaded',apply,{once:true});}
+  if(doc){global.addEventListener('resize',schedule);global.addEventListener('resonant-volume-rendered',schedule);doc.addEventListener('DOMContentLoaded',schedule,{once:true});}
 })(typeof window==='undefined'?globalThis:window);

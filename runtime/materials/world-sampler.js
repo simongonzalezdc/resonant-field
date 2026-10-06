@@ -8,6 +8,7 @@
   const host={worldSelector:"[data-volume-world]",excludeSelector:"",ignoredHostSelector:"[data-volume-world]"};
   let closed=false;
   let pendingFrame = 0;
+  let refreshRevision = 0;
   let sceneKey = "";
   let paintedSceneKey = "";
   let pendingScene=null;
@@ -16,6 +17,20 @@
   let lastScene = null;
   let substrate="",sampleBlobs=[],ownedUrls=[],sourceValue="",sourceCounter=0,baseCache=null;
   const retiredUrls=new Map();
+  // Keep the three destination worlds at original sampling resolution.
+  const sceneCache=new Map();let cacheHits=0;
+  function rememberScene(key) {
+    sceneCache.delete(key);
+    sceneCache.set(key,{urls:ownedUrls,samples,blobs:sampleBlobs,substrate,fallbackColors,scene:lastScene});
+    while(sceneCache.size>3){const first=sceneCache.keys().next().value;const old=sceneCache.get(first);sceneCache.delete(first);retire(old.urls);}
+  }
+  function restoreScene(key) {
+    const cached=sceneCache.get(key);if(!cached)return false;
+    if(pendingScene){generation++;pendingScene=null;}
+    sceneCache.delete(key);sceneCache.set(key,cached);
+    ownedUrls=cached.urls;samples=cached.samples;sampleBlobs=cached.blobs;substrate=cached.substrate;fallbackColors=cached.fallbackColors;lastScene=cached.scene;
+    sceneKey=key;baseCache=null;cacheHits++;return true;
+  }
   function retire(urls){if(!urls.length)return;const id=setTimeout(()=>{urls.forEach(u=>URL.revokeObjectURL(u));retiredUrls.delete(id)},5000);retiredUrls.set(id,urls);while(retiredUrls.size>1){const [timer,old]=retiredUrls.entries().next().value;clearTimeout(timer);old.forEach(u=>URL.revokeObjectURL(u));retiredUrls.delete(timer);}}
   function clearScenePaint() {
     document.querySelectorAll('[data-volume-background-owner="scene"]').forEach(e=>{
@@ -29,8 +44,8 @@
   }
   function releaseScene() {
     clearScenePaint();
-    if(pendingFrame)clearTimeout(pendingFrame);pendingFrame=0;pendingScene=null;
-    ownedUrls.forEach(u=>URL.revokeObjectURL(u));ownedUrls=[];
+    if(pendingFrame)cancelAnimationFrame(pendingFrame);pendingFrame=0;pendingScene=null;
+    new Set([...ownedUrls,...[...sceneCache.values()].flatMap(entry=>entry.urls)]).forEach(u=>URL.revokeObjectURL(u));ownedUrls=[];sceneCache.clear();
     retiredUrls.forEach((urls,t)=>{clearTimeout(t);urls.forEach(u=>URL.revokeObjectURL(u));});retiredUrls.clear();
     samples=[];sampleBlobs=[];fallbackColors=[];substrate="";baseCache=null;lastScene=null;sceneKey="";paintedSceneKey="";
   }
@@ -254,7 +269,8 @@
     if(token !== generation) return false;
     // Upscaling the photographed plate before encoding adds memory, not source detail.
     const nativeWidth=image?image.naturalWidth:2048;
-    const width=Math.max(1,Math.min(2048,nativeWidth,Math.ceil(world.width))),height=Math.max(1,Math.ceil(world.height*width/world.width));
+    const width=image ? Math.max(1,Math.min(2048,nativeWidth,Math.ceil(world.width))) : 1,
+      height=image ? Math.max(1,Math.ceil(world.height*width/world.width)) : 1;
     const baseKey=JSON.stringify([sourceId(src),width,height,prefs.mode,prefs.toneAnchor,prefs.brightness,prefs.backgroundPresence,prefs.position,prefs.selectiveColor,prefs.selectiveColor?prefs.hue:0]);
     const reuse=baseCache?.key===baseKey;
     const base=reuse?baseCache.canvas:makeCanvas();if(!reuse){base.width=width;base.height=height;}
@@ -348,13 +364,17 @@
     try {for(const blob of output)nextUrls.push(URL.createObjectURL(blob));}
     catch(error){nextUrls.forEach(u=>URL.revokeObjectURL(u));throw error;}
     const old=ownedUrls;sampleBlobs=output;ownedUrls=nextUrls;substrate=nextUrls[0];
-    retire(old);
+    if(![...sceneCache.values()].some(entry=>entry.urls===old))retire(old);
     samples=ownedUrls.slice(0,5);fallbackColors=nextFallback;lastScene={readability,width:world.width,height:world.height,encodedWidth:width,encodedHeight:height,diffusion:nativeFilter ? "native-gaussian" : "moment-matched-box",blurExecution:reuse ? "cached" : "main",encoding:synchronousEncoding?"bounded-synchronous-fallback":"asynchronous-with-bounded-fallback",buildMilliseconds:Math.round(performance.now()-started),reflection:texture ? {coverage:texture.coverage,mean:texture.mean,maxOpacity:window.ResonantFinishController?.gain(prefs.finish,prefs.mode,prefs.plate)??(prefs.mode==="light"?.035:.055),analysisWidth:texture.width,analysisHeight:texture.height} : null,timings:Object.fromEntries(Object.entries(timings).map(([k,v])=>[k,Math.round(v)]))};
     return true;
   }
 
+  // A uniform setting has no spatial detail; navigation can reuse its five pixels.
+  function sceneIdentity(src,world,prefs){return JSON.stringify([sourceId(src),src?Math.ceil(world.width):0,src?Math.ceil(world.height):0,prefs]);}
+
   async function refresh() {
     if(closed)return;
+    const revision=++refreshRevision;
     const api=window.ResonantVolume;
     const visible=[...document.querySelectorAll(host.worldSelector)].filter(e=>{const rect=e.getBoundingClientRect();return rect.width && rect.height && !e.closest("[hidden]") && getComputedStyle(e).visibility!=="hidden";});
     if(visible.length!==1){document.documentElement.dataset.volumeSampling=visible.length?"ambiguous-world":"no-world";releaseScene();return;}
@@ -380,27 +400,29 @@
       window.dispatchEvent(new CustomEvent("resonant-world-sampled",{detail:{key:null,status:"solid"}}));
       return;
     }
-    const key=JSON.stringify([sourceId(src),Math.ceil(world.width),Math.ceil(world.height),prefs]);
+    const key=sceneIdentity(src,world,prefs);
     try {
-      if(key !== sceneKey) {
+      if(key !== sceneKey && !restoreScene(key)) {
         if(!pendingScene || pendingScene.key !== key) {
           const job={key,promise:null};
-          job.promise=rebuild(world,prefs,src).then(success=>{if(pendingScene===job){if(success)sceneKey=key;pendingScene=null;}return success;}).catch(error=>{if(pendingScene===job) pendingScene=null;throw error;});
+          job.promise=rebuild(world,prefs,src).then(success=>{if(pendingScene===job){if(success){sceneKey=key;rememberScene(key);}pendingScene=null;}return success;}).catch(error=>{if(pendingScene===job) pendingScene=null;throw error;});
           pendingScene=job;
         }
         const success=await pendingScene.promise;
         if(!success || sceneKey !== key) return;
       }
+      if(revision!==refreshRevision)return;
+      const targets=[...document.querySelectorAll("[data-volume-rendered],.rv-semantic-host")]
+        .filter(element=>element!==setting && !(host.excludeSelector && element.closest(host.excludeSelector))
+          && !element.closest("[hidden],dialog:not([open])") && !(host.ignoredHostSelector && element.matches(host.ignoredHostSelector)))
+        .map(element=>({element,depth:Number(element.dataset.volumeDepth),rect:element.getBoundingClientRect()}))
+        .filter(({depth})=>Number.isInteger(depth)&&samples[depth]);
+      lastScene.width=world.width;lastScene.height=world.height;
       setCss(setting,"background-image",`url("${substrate}")`,"important");
       setCss(setting,"background-size",`${lastScene.width}px ${lastScene.height}px`,"important");
       setCss(setting,"background-position","0 0","important");
       if(plate)plate.style.visibility="hidden";
-      document.querySelectorAll("[data-volume-rendered],.rv-semantic-host").forEach(element => {
-        if(element===setting || (host.excludeSelector && element.closest(host.excludeSelector)) || element.closest("[hidden]") || (host.ignoredHostSelector && element.matches(host.ignoredHostSelector))) return;
-        if(prefs.solid || matchMedia("(forced-colors: active)").matches || matchMedia("(prefers-reduced-transparency: reduce)").matches) { element.classList.remove("rv-world-sampled");return; }
-        const depth=Number(element.dataset.volumeDepth);
-        if(!Number.isInteger(depth) || !samples[depth]) return;
-        const rect=element.getBoundingClientRect();
+      targets.forEach(({element,depth,rect}) => {
         const ink=lastScene.readability?.[depth]?.ink;
         if(ink){setCss(element,"--color-text",ink);setCss(element,"--color-text-secondary",ink);setCss(element,"color",ink,"important");element.dataset.volumeInkOwner="scene";}
         else if(element.dataset.volumeInkOwner==="scene"){for(const name of ["--color-text","--color-text-secondary","color"])element.style.removeProperty(name);delete element.dataset.volumeInkOwner;}
@@ -445,7 +467,7 @@
     if(!paintedSceneKey||sceneKey!==paintedSceneKey||pendingScene)return false;
     const worlds=visibleWorlds();if(worlds.length!==1)return false;
     const setting=worlds[0],rect=setting.getBoundingClientRect(),plate=setting.querySelector(":scope>.plate"),src=plate?.getAttribute("src")?plate.currentSrc||plate.src:"";
-    return paintedSceneKey===JSON.stringify([sourceId(src),Math.ceil(rect.width),Math.ceil(rect.height),prefs]);
+    return paintedSceneKey===sceneIdentity(src,rect,prefs);
   }
   function snapshot(){
     const painted=paintedSceneKey?JSON.parse(paintedSceneKey)[3]:appearance();
@@ -453,14 +475,16 @@
     if(document.documentElement.dataset.volumeSampling==="solid")painted.solid=true;
     return {key:paintedSceneKey,samples:[...samples],blobs:[...sampleBlobs],scene:lastScene,appearance:painted,desiredAppearance:appearance(),current:isCurrent()};
   }
-  function schedule() {
-    if(closed || pendingFrame) return;
-    pendingFrame=setTimeout(() => {pendingFrame=0;refresh();},0);
+  function schedule(immediate=false) {
+    if(closed)return;
+    if(immediate===true){if(pendingFrame)cancelAnimationFrame(pendingFrame);pendingFrame=0;return refresh();}
+    if(pendingFrame)return;
+    pendingFrame=requestAnimationFrame(() => {pendingFrame=0;refresh();});
   }
   addEventListener("resonant-volume-rendered",schedule);
   addEventListener("resize",schedule,{passive:true});
   document.addEventListener("scroll",schedule,{passive:true,capture:true});
-  window.ResonantWorldSampler={configureHost(options={}){for(const key of ['worldSelector','excludeSelector','ignoredHostSelector'])if(typeof options[key]==='string')host[key]=options[key];generation++;releaseScene();schedule();return {...host};},release(){generation++;releaseScene();document.documentElement.dataset.volumeSampling='idle';},refresh:schedule,snapshot,isCurrent,inspect:()=>({sceneKey,paintedSceneKey,samples:samples.length,generation,scene:lastScene,status:document.documentElement.dataset.volumeSampling,resources:{pendingEncodes,activeWorkers:0,activeUrls:ownedUrls.length,retiredBatches:retiredUrls.size,pendingScenes:pendingScene?1:0}})};
+  window.ResonantWorldSampler={configureHost(options={}){for(const key of ['worldSelector','excludeSelector','ignoredHostSelector'])if(typeof options[key]==='string')host[key]=options[key];generation++;releaseScene();schedule();return {...host};},release(){generation++;releaseScene();document.documentElement.dataset.volumeSampling='idle';},refresh:schedule,snapshot,isCurrent,inspect:()=>({sceneKey,paintedSceneKey,samples:samples.length,generation,scene:lastScene,status:document.documentElement.dataset.volumeSampling,resources:{pendingEncodes,activeWorkers:0,cachedScenes:sceneCache.size,cacheHits,cachedUrls:[...sceneCache.values()].filter(entry=>entry.urls!==ownedUrls).reduce((n,entry)=>n+entry.urls.length,0),activeUrls:ownedUrls.length,retiredBatches:retiredUrls.size,pendingScenes:pendingScene?1:0}})};
   addEventListener("pagehide",e=>{if(!e.persisted){closed=true;generation++;releaseScene();imageCache.clear();}});
   schedule();
 })();

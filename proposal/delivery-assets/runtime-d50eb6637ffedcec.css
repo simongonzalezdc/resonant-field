@@ -5168,3 +5168,24 @@ select.rv-component {
   padding-inline: 16px 38px !important;
   min-block-size: 44px;
 }
+
+/* Keep navigation geometry stable as long documents enter and leave view. */
+html {scrollbar-gutter:stable;}
+#appHeader {position:sticky;top:0;}
+
+@media(max-width:1199px) {
+ #appHeader {grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;}
+ #appHeader .app-identity {grid-column:1;grid-row:1;}
+ #appHeader .top-actions {grid-column:2;grid-row:1;}
+ #appHeader .surface-nav {grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));width:100%;min-width:0;gap:0;}
+ #appHeader .surface-nav button {min-width:0;white-space:normal;line-height:1.2;}
+}
+@media(max-width:799px) {
+ html[data-surface] #appHeader .surface-nav button {font-size:12px;padding-inline:4px;}
+}
+@media(max-width:359px) {
+ html[data-surface] #appHeader .surface-nav button {font-size:11px;}
+}
+
+.library-section,#atomicComparison {scroll-margin-block-start:80px;}
+@media(max-width:1199px) {.library-section,#atomicComparison {scroll-margin-block-start:128px;}}

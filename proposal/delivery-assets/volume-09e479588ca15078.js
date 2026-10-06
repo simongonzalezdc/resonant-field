@@ -469,15 +469,18 @@
   }
 
   function worldRect(doc) {
-    const world = doc && doc.querySelector("#workspace > .plate, [data-volume-world], .workspace-shell > .plate, .plate");
-    if (!world || typeof world.getBoundingClientRect !== "function") return null;
-    const rect = world.getBoundingClientRect();
-    return rect.width && rect.height ? rect : null;
+    if(state.renderWorldRect!==undefined)return state.renderWorldRect;
+    for(const world of doc?.querySelectorAll("#workspace > .plate, [data-volume-world], .workspace-shell > .plate, .plate")||[]) {
+      if(world.closest("[hidden],dialog:not([open])"))continue;
+      const rect=world.getBoundingClientRect();
+      if(rect.width && rect.height)return rect;
+    }
+    return null;
   }
 
   function alignWorld(host, target, doc, plan, appearance) {
     if (!target || typeof target.getBoundingClientRect !== "function") return;
-    const local = target.getBoundingClientRect();
+    const local = state.renderRects?.get(target) || target.getBoundingClientRect();
     const world = worldRect(doc);
     if (!local.width || !local.height) return;
     const vars = {
@@ -619,6 +622,12 @@
     return plan;
   }
 
+  function surfaceTarget(host) {
+    return host.matches && host.matches(".pane-material,.material-lab,.strata-stack")
+      ? host
+      : (host.querySelector && host.querySelector(":scope > .pane-material, :scope > .material-lab, :scope > .strata-stack")) || host;
+  }
+
   function paintSurface(host) {
     const role = inferredRole(host);
     if (!SURFACE_ROLES.has(role)) return null;
@@ -638,9 +647,7 @@
     paintedStates.set(host,host.dataset.volumeState||"resting");
     host.classList.toggle("rv-solid", plan.optics.readability.solidFallback);
     applyOpaqueFallback(host,plan.optics.readability.solidFallback);
-    const target = host.matches && host.matches(".pane-material,.material-lab,.strata-stack")
-      ? host
-      : (host.querySelector && host.querySelector(":scope > .pane-material, :scope > .material-lab, :scope > .strata-stack")) || host;
+    const target = surfaceTarget(host);
     if(host.matches("textarea,input,select")) {
       host.classList.add("rv-field");host.dataset.volumeRendered="true";
     } else {
@@ -662,23 +669,29 @@
 
   function render(doc) {
     if (!doc) return { surfaces: 0, components: 0 };
+    if(state.animationFrame){if(global.cancelAnimationFrame)global.cancelAnimationFrame(state.animationFrame);else global.clearTimeout(state.animationFrame);state.animationFrame=0;}
     state.document = doc;
     state.refreshToken += 1;
     state.appearance = { ...state.appearance };
     state.renderAppearance = readAppearance(doc);
     state.renderParents = new WeakMap();
+    state.renderWorldRect=worldRect(doc);
+    const visibleHosts=discoverSurfaceHosts(doc).filter(host=>!host.closest("[hidden],dialog:not([open])"));
+    state.renderRects=new WeakMap();
+    for(const host of visibleHosts){const target=surfaceTarget(host);state.renderRects.set(target,target.getBoundingClientRect());}
     try {
     let surfaces = 0;
-    for (const host of discoverSurfaceHosts(doc)) if (!host.closest("[hidden],dialog:not([open])") && paintSurface(host)) surfaces += 1;
+    for (const host of visibleHosts) if (paintSurface(host)) surfaces += 1;
     const componentNodes = doc.querySelectorAll("[data-volume-role], [data-volume-state]");
     let components = 0;
     for (const element of componentNodes) {
       if (element.closest("[hidden],dialog:not([open])") || SURFACE_ROLES.has(inferredRole(element))) continue;
       if (paintComponent(element)) components += 1;
     }
+    state.observer?.takeRecords();
     if(global.dispatchEvent && typeof CustomEvent !== "undefined") global.dispatchEvent(new CustomEvent("resonant-volume-rendered"));
     return { surfaces, components };
-    } finally { state.renderAppearance = null; state.renderParents = null; }
+    } finally { state.renderAppearance = null; state.renderParents = null; state.renderWorldRect=undefined; state.renderRects=null; }
   }
 
   function scheduleRefresh() {
@@ -688,7 +701,7 @@
       state.animationFrame = 0;
       render(state.document);
     };
-    state.animationFrame = global.setTimeout(run,0);
+    state.animationFrame = global.requestAnimationFrame ? global.requestAnimationFrame(run) : global.setTimeout(run,0);
   }
 
   function attachObservers(doc) {
@@ -705,7 +718,12 @@
       state.observer.observe(doc.documentElement,{attributes:true,attributeOldValue:true,attributeFilter:["data-view","data-surface","data-appearance","class","hidden"]});
     }
     if (typeof ResizeObserver === "function") {
-      state.resizeObserver = new ResizeObserver(scheduleRefresh);
+      let viewportWidth=doc.documentElement.clientWidth,viewportHeight=doc.defaultView?.innerHeight;
+      state.resizeObserver = new ResizeObserver(() => {
+        const width=doc.documentElement.clientWidth,height=doc.defaultView?.innerHeight;
+        if(width===viewportWidth && height===viewportHeight)return;
+        viewportWidth=width;viewportHeight=height;scheduleRefresh();
+      });
       state.resizeObserver.observe(doc.documentElement);
     }
   }
@@ -767,7 +785,7 @@
   function unmount() {
     if (state.observer) state.observer.disconnect();
     if (state.resizeObserver) state.resizeObserver.disconnect();
-    if (state.animationFrame) global.clearTimeout(state.animationFrame);
+    if (state.animationFrame) (global.cancelAnimationFrame || global.clearTimeout)(state.animationFrame);
     state.observer = null;
     state.resizeObserver = null;
     state.animationFrame = 0;

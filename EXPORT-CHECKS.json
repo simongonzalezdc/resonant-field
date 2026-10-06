@@ -1,13 +1,13 @@
 {
   "scope": "Design-system proposal only",
-  "revision": "Audit and independent re-review remediation validated",
+  "revision": "Navigation coherence and material refresh corrections validated",
   "asset_records_verified": 74,
   "code_records_verified": 14,
   "third_party_notices_present": true,
   "binary_media_excluded": true,
   "browser": {
     "passed": true,
-    "hashes": 159,
+    "hashes": 165,
     "html_pages": [
       {
         "file": "index.html",
@@ -82,7 +82,7 @@
       {
         "file": "runtime/verification/fixtures/host-smoke.html",
         "title": "Resonant Field local host smoke fixture",
-        "body": 1580,
+        "body": 1650,
         "overflow": false,
         "missingImages": 0
       }
@@ -253,11 +253,633 @@
   },
   "limitations": [
     "Automated browser checks do not replace manual screen-reader acceptance or full contrast certification.",
-    "Python Playwright/WebKit unavailable in current environment; dependencies declared and Node Chromium used for checked browser behaviors."
+    "Python Playwright/WebKit unavailable in current environment; dependencies declared and Node Chromium used for checked browser behaviors.",
+    "A first visit to a new photographic world still requires rasterization. Controlled throttled traces contain long tasks and do not certify frame-perfect navigation.",
+    "Shared navigation layout is technically validated; visual acceptance remains with Simon."
   ],
   "reference_status": {
     "blackboard_pr_198": "closed, not merged",
     "blackboard_issue_427": "open",
     "augmentor_license": "MIT at pinned source revision"
-  }
+  },
+  "navigation": {
+    "passed": true,
+    "transitions": [
+      {
+        "width": 320,
+        "from": "workspace",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "workspace",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "workspace",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "workspace",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "combined",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "combined",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "combined",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "combined",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "augmentor",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "augmentor",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "augmentor",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "augmentor",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "proposal",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "proposal",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "proposal",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "proposal",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "library",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "library",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "library",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 320,
+        "from": "library",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "workspace",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "workspace",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "workspace",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "workspace",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "combined",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "combined",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "combined",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "combined",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "augmentor",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "augmentor",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "augmentor",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "augmentor",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "proposal",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "proposal",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "proposal",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "proposal",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "library",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "library",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "library",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 390,
+        "from": "library",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "workspace",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "workspace",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "workspace",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "workspace",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "combined",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "combined",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "combined",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "combined",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "augmentor",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "augmentor",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "augmentor",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "augmentor",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "proposal",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "proposal",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "proposal",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "proposal",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "library",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "library",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "library",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 768,
+        "from": "library",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "workspace",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "workspace",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "workspace",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "workspace",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "combined",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "combined",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "combined",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "combined",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "augmentor",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "augmentor",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "augmentor",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "augmentor",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "proposal",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "proposal",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "proposal",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "proposal",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "library",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "library",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "library",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1024,
+        "from": "library",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "workspace",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "workspace",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "workspace",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "workspace",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "combined",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "combined",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "combined",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "combined",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "augmentor",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "augmentor",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "augmentor",
+        "to": "proposal",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "augmentor",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "proposal",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "proposal",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "proposal",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "proposal",
+        "to": "library",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "library",
+        "to": "workspace",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "library",
+        "to": "combined",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "library",
+        "to": "augmentor",
+        "fullRenders": 1
+      },
+      {
+        "width": 1440,
+        "from": "library",
+        "to": "proposal",
+        "fullRenders": 1
+      }
+    ],
+    "errors": [],
+    "checks": [
+      "100 directed transitions; one active destination, stable plain scene, at most one full render",
+      "New nested corners follow the first measured parent radius",
+      "Back, Forward, and brand retain the selected surface",
+      "Rapid navigation settles on the final selected route",
+      "Document and inner thread scroll survive navigation",
+      "Shared Appearance control works from all five destinations",
+      "ROSI comparison remains accessible below the persistent header",
+      "Library anchors remain visible below the persistent header",
+      "Photo samples retain full dimensions and valid URLs after delayed cached return; three-scene bound",
+      "Teardown releases scene resources"
+    ]
+  },
+  "unchanged_image_font_bytes": true,
+  "uniform_material_color_parity": "Five depth samples match exactly in light and dark modes"
 }

@@ -19,3 +19,5 @@ The runner verifies `FILE-MANIFEST.json`, all HTML pages and background choices,
 These automated checks do not certify all contrast combinations or replace manual screen-reader acceptance. The Python artifact resolver is a reusable helper with a path-confinement check recorded in `EXPORT-CHECKS.json`; the shipped Node runner verifies the published artifact directly. Run `python runtime/verification/test-harness.py` for the four dependency-free artifact selection and confinement regressions.
 
 Run `npm test --prefix runtime/verification` for the shipped blend, finish and contrast controller regressions. They require Node only; the browser dependency is not loaded by those tests.
+
+Run `node runtime/verification/verify-navigation.mjs` for all 20 directed navigation pairs at five viewport widths, active navigation semantics, history and brand routing, scroll retention, shared Appearance access, full-size photo samples after a delayed return, and scene teardown. It uses the same browser environment variables and optional root/receipt arguments. This checks interaction correctness; headless timing does not certify smoothness on every device.

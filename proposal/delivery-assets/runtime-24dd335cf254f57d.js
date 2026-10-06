@@ -370,7 +370,7 @@ function rememberAllScroll() {
 }
 function restoreWindowScroll(view) {
   const saved = windowScrollPositions.get(view);
-  if (Number.isFinite(saved)) window.scrollTo({ top: saved, behavior: "instant" });
+  window.scrollTo({ top: Number.isFinite(saved) ? saved : 0, behavior: "instant" });
 }
 function connectSemanticVolume() {
   ensureVolumeRoles();
@@ -1195,7 +1195,6 @@ function surface(name) {
     renderSource();
   }
   root.dataset.surface = name;
-  requestAnimationFrame(alignMaterialGrounds);
   $("compoundWorkbench").hidden = name !== "combined";
   if(name === "combined") {$("compoundThread").setAttribute("role","region");$("compoundThread").setAttribute("aria-label","Local conversation");$("compoundThread").setAttribute("aria-live","off");}
   else {$("compoundThread").removeAttribute("role");$("compoundThread").setAttribute("aria-live","off");}
@@ -1214,23 +1213,19 @@ function surface(name) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.surface === name)),
     );
-  ResonantGeometry.configure(prefs.cornerProfile);
-  maybeAdaptAppearance();
 }
 function showView(name, focus = false) {
   if ($("appearance").open) closeAppearance(false);
-  rememberAllScroll();
-  requestAnimationFrame(alignMaterialGrounds);
   const app = name === "app",
     proposal = name === "proposal",
     library = name === "library";
   root.dataset.view = name;
-  for (const id of ["appHeader", "appChrome", "workspace", "appStatus"])
+  $("appHeader").hidden = false;
+  for (const id of ["appChrome", "workspace", "appStatus"])
     $(id).hidden = !app;
   for (const id of ["proposalHeader", "proposal", "proposalFooter"])
-    $(id).hidden = !proposal;
-  for (const id of ["libraryHeader", "designSystem"]) $(id).hidden = !library;
-  ResonantGeometry.configure(prefs.cornerProfile);
+    $(id).hidden = id === "proposalHeader" || !proposal;
+  for (const id of ["libraryHeader", "designSystem"]) $(id).hidden = id === "libraryHeader" || !library;
   document.title = app
     ? "Resonant Field — App prototype"
     : library
@@ -1247,30 +1242,51 @@ function showView(name, focus = false) {
       ? "Skip to design system"
       : "Skip to design proposal";
   $("skipLink").href = "#" + heading;
-  maybeAdaptAppearance();
-  requestAnimationFrame(() => restoreWindowScroll(name));
+  restoreWindowScroll(name);
+  for (const element of document.querySelectorAll("#thread, #documentStage, .review-scroll, #augThread")) restoreScroll(element);
   if (focus) $(heading).focus({ preventScroll: true });
 }
-function navigateView(name, focus = true) {
-  const hash =
-    name === "proposal"
-      ? "#proposal"
-      : name === "library"
-        ? "#design-system"
-        : root.dataset.surface === "combined"
-          ? "#combined"
-          : root.dataset.surface === "augmentor"
-          ? "#augmentor"
-          : "#app";
-  if (location.hash !== hash) {
-    // Save the current panel before leaving it; Back restores the actual task.
-    const state = { surface: root.dataset.surface, panel: root.dataset.panel };
-    history.replaceState(state, "", location.href);
-    history.pushState(state, "", hash);
+let lastAppliedRoute = "";
+let routeRestoreFrame = 0;
+function routeStamp() { return location.hash + "|" + JSON.stringify(history.state || {}); }
+function commitRoute() {
+  const app = root.dataset.view === "app";
+  for (const button of $("appHeader").querySelectorAll(".surface-nav button")) {
+    const selected = button.dataset.surface ? app && button.dataset.surface === root.dataset.surface
+      : button.id === "readProposal" ? root.dataset.view === "proposal" : root.dataset.view === "library";
+    button.setAttribute("aria-pressed", String(selected));
+    if (selected) button.setAttribute("aria-current", "page"); else button.removeAttribute("aria-current");
+    const state = selected ? "selected" : "resting";
+    if(button.dataset.volumeState !== state)button.dataset.volumeState=state;
+    if(button.dataset.volumeBaseState !== state)button.dataset.volumeBaseState=state;
   }
+  $("appHeader").querySelector(".brand").href = app
+    ? root.dataset.surface === "combined" ? "#combined" : root.dataset.surface === "augmentor" ? "#augmentor" : "#app"
+    : root.dataset.view === "proposal" ? "#proposal" : "#design-system";
+  $("appBadge").textContent = app ? "App prototype" : root.dataset.view === "proposal" ? "Design proposal" : "Design system";
+  maybeAdaptAppearance();
+  window.ResonantVolume?.refresh();
+  ResonantGeometry.configure(prefs.cornerProfile);
+  window.ResonantWorldSampler?.refresh(true);
+  lastAppliedRoute = routeStamp();
+}
+function navigateView(name, focus = true, requestedSurface = null) {
+  const nextSurface = requestedSurface || root.dataset.surface;
+  const hash = name === "proposal" ? "#proposal" : name === "library" ? "#design-system"
+    : nextSurface === "combined" ? "#combined" : nextSurface === "augmentor" ? "#augmentor" : "#app";
+  if (location.hash === hash && root.dataset.view === name && (!requestedSurface || root.dataset.surface === requestedSurface)) return;
+  rememberAllScroll();
+  if (location.hash !== hash) {
+    history.replaceState({ surface: root.dataset.surface, panel: root.dataset.panel }, "", location.href);
+    history.pushState({ surface: nextSurface, panel: root.dataset.panel }, "", hash);
+  }
+  if (name === "app") surface(nextSurface);
   showView(name, focus);
+  commitRoute();
 }
 function restoreRoute(focus = false) {
+  if (lastAppliedRoute === routeStamp()) return;
+  rememberAllScroll();
   const hash = location.hash;
   const section = document.getElementById(hash.slice(1));
   if (section && section.closest("#designSystem")) {
@@ -1279,62 +1295,36 @@ function restoreRoute(focus = false) {
     const heading = section.querySelector("h2") || section;
     heading.tabIndex = -1;
     if (focus) heading.focus({ preventScroll: true });
+    commitRoute();
     return;
   }
-  if (hash === "#combined") surface("combined");
-  else if (hash === "#augmentor") surface("augmentor");
-  else if (!["#proposal", "#design-system"].includes(hash))
-    surface("workspace");
-  else if (history.state?.surface) surface(history.state.surface);
+  const nextSurface = hash === "#combined" ? "combined" : hash === "#augmentor" ? "augmentor"
+    : ["#proposal", "#design-system"].includes(hash) ? history.state?.surface || root.dataset.surface : "workspace";
+  surface(nextSurface);
   if (history.state?.panel) panel(history.state.panel);
-  showView(
-    hash === "#proposal"
-      ? "proposal"
-      : hash === "#design-system"
-        ? "library"
-        : "app",
-    focus,
-  );
+  showView(hash === "#proposal" ? "proposal" : hash === "#design-system" ? "library" : "app", focus);
+  commitRoute();
 }
-document.querySelectorAll("button[data-surface]").forEach((b) =>
-  b.addEventListener("click", () => {
-    surface(b.dataset.surface);
-    navigateView("app", false);
-  }),
-);
+function scheduleRouteRestore() {
+  if (routeRestoreFrame) return;
+  routeRestoreFrame = requestAnimationFrame(() => { routeRestoreFrame = 0; restoreRoute(true); });
+}
+document.querySelectorAll("button[data-surface]").forEach(b => b.addEventListener("click", () => navigateView("app", false, b.dataset.surface)));
 $("readProposal").addEventListener("click", () => navigateView("proposal"));
 $("appLibrary").addEventListener("click", () => navigateView("library"));
-$("openApp").addEventListener("click", () => navigateView("app"));
+$("openApp").addEventListener("click", () => navigateView("app", true, "workspace"));
 $("openDesignSystem").addEventListener("click", () => navigateView("library"));
-$("libraryOpenApp").addEventListener("click", () => navigateView("app"));
-$("libraryOpenProposal").addEventListener("click", () =>
-  navigateView("proposal"),
-);
-$("libraryAppearanceOpen").addEventListener("click", () =>
-  openAppearance($("libraryAppearanceOpen")),
-);
-$("libraryConsentExample").addEventListener("click", () => {
-  surface("augmentor");
-  navigateView("app");
-});
-$("proposalFooter")
-  .querySelector("a")
-  .addEventListener("click", (e) => {
-    e.preventDefault();
-    navigateView("app");
-  });
-$("skipLink").addEventListener("click", (e) => {
+$("libraryOpenApp").addEventListener("click", () => navigateView("app", true, "workspace"));
+$("libraryOpenProposal").addEventListener("click", () => navigateView("proposal"));
+$("libraryAppearanceOpen").addEventListener("click", () => openAppearance($("libraryAppearanceOpen")));
+$("libraryConsentExample").addEventListener("click", () => navigateView("app", true, "augmentor"));
+$("proposalFooter").querySelector("a").addEventListener("click", e => { e.preventDefault(); navigateView("app", true, "workspace"); });
+$("skipLink").addEventListener("click", e => {
   e.preventDefault();
-  $(
-    root.dataset.view === "proposal"
-      ? "proposalTitle"
-      : root.dataset.view === "library"
-        ? "libraryTitle"
-        : "workspaceTitle",
-  ).focus({ preventScroll: true });
+  $(root.dataset.view === "proposal" ? "proposalTitle" : root.dataset.view === "library" ? "libraryTitle" : "workspaceTitle").focus({ preventScroll: true });
 });
-window.addEventListener("popstate", () => restoreRoute(true));
-window.addEventListener("hashchange", () => restoreRoute(true));
+window.addEventListener("popstate", scheduleRouteRestore);
+window.addEventListener("hashchange", scheduleRouteRestore);
 const sourceRecords = {"background":{"title":"Backgrounds are interchangeable","kind":"User direction","kicker":"Appearance principles / current direction","body":"<h2>The setting is yours.<\/h2><p>A background plate can have any subject, displayed in grayscale by default. An optional single complementary tint can appear in lighter areas without changing the material palette. The material system must remain legible and coherent over architecture, water, landscape, texture, abstract imagery, or a plain field.<\/p><blockquote><mark>Background choice and material color are independent decisions.<\/mark><\/blockquote><h3>Choice without a prescribed palette<\/h3><p>The forest metaphor introduced an unwanted bias toward green. Forest remains one optional image. Green remains one optional material color. Neither is the identity of the whole system.<\/p><h3>Real components, adaptable surfaces<\/h3><p>The proposal uses actual frontend components. Its navigation, source selection, notes, draft editor, appearance controls, and local review states are interactive. Generated images are limited to background plates.<\/p><h3>A stable reading experience<\/h3><p>Choosing a bright, dark, intricate, or quiet plate must preserve the current content, trust labels, and draft. The user’s material and accent settings stay intact.<\/p>","foot":"Appearance principle. Simon approved the included backgrounds; overall integration remains a proposal.","id":"background"},"material":{"title":"Material and depth","kind":"User direction","kicker":"Material principles / current direction","body":"<h2>Many thin layers. One coherent place.<\/h2><p>Five related films vary around the chosen main hue. Their color, opacity and blur budgets accumulate in the shared setting sample. Components occupy inset, work, raised or floating levels by purpose and state; column order never determines depth. Recessed reading surfaces expose an earlier film path.<\/p><blockquote><mark>Depth must remain physically plausible and useful to the task.<\/mark><\/blockquote><h3>Keep the natural qualities<\/h3><p>Layering and filtered light inform the current glass. Selected or focused controls may carry a small material-hue signal. Interval relationships connect the film family. Insect-wing iridescence remains a design goal; the rejected repeated edge strokes were removed.<\/p><h3>Remove false perspective<\/h3><p>Diagonal or skewed planes, generic glossy glass cards, and scenery that takes space from the work have been rejected. The composition must work on a phone and a large display.<\/p><h3>Prove the rendering<\/h3><p>More layers do not automatically prove richer perceived color or compounded blur. The implementation must measure the plate, the material contribution, and legibility in real browser renders.<\/p>","foot":"Design requirements with authored component/state placements. Real HTML sits over shared setting samples; rendered craftsmanship remains unapproved.","id":"material"},"research":{"title":"Research and its limits","kind":"Research candidate","kicker":"Source synthesis / bounded evidence","body":"<h2>Let the evidence constrain the effect.<\/h2><p>Standards and platform guidance support legibility, hierarchy, explicit state, and accessible fallbacks. They do not select a universally correct aesthetic.<\/p><h3>Compositing<\/h3><p>Source-over alpha layers increase effective coverage. Perceptual color and backdrop filtering need separate rendered checks.<\/p><h3>Structural color<\/h3><p>The Morpho research describes interactions among wing-scale structure, viewing direction, and reflected color. This motivates a future structural-color treatment. The current frontend does not establish that effect or simulate wing optics.<\/p><h3>Compounding knowledge<\/h3><p>Keep prior versions, source records, corrections, and disposition together. Deferred community conclusions remain deferred; the presence of a URL is not proof of a claim.<\/p>","foot":"Research candidate. Read primary sources in the proposal below. References inform the proposal and do not establish acceptance.","id":"research"},"browser-context":{"title":"Page context needs a choice","kind":"Interface record","kicker":"AUGMENTOR / PERMISSION BOUNDARY","body":"<h2>Page context needs a choice.<\/h2><p>The source-grounded Augmentor example shows a request to read page context, with separate Allow and Decline controls. The request and its result remain distinct.<\/p><blockquote>Keep the source identity visible and the permission choice explicit.<\/blockquote><h3>A bounded local example<\/h3><p>This record reproduces the interface relationship in the existing source-side example. The simulator changes local consent state only. It does not read a browser page, contact a provider, or change installed extension permissions.<\/p><h3>Review before promotion<\/h3><p>A draft and a local review decision remain separate from approved knowledge or an external action.<\/p>","foot":"Source-grounded local fixture from the original Augmentor comparison in this revision. No provider or page access is performed.","id":"browser-context"}};
 Object.values(sourceRecords).forEach(Object.freeze);
 Object.freeze(sourceRecords);
@@ -1433,7 +1423,7 @@ function setScenario(value) {
   $("documentStage").setAttribute("aria-busy", String(value === "loading"));
   clearTimeout(sourceTimer);
   scenario = value;
-  surface("workspace");
+  navigateView("app", false, "workspace");
   panel("source", false);
   restoreDocument();
   renderSource();
@@ -2112,4 +2102,4 @@ if(new URLSearchParams(location.search).get('comparison')==='atoms')setTimeout((
   selectPanel(panel);
 })();
 
-document.getElementById('openCombined').addEventListener('click',()=>{surface('combined');navigateView('app');});
+document.getElementById('openCombined').addEventListener('click',()=>navigateView('app',true,'combined'));
