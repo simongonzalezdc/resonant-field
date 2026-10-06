@@ -5137,3 +5137,8 @@ html[data-surface=combined] #appStatus label{display:none}
 .corner-family-preview .corner-frame{width:90px;height:70px;border-radius:calc(var(--corner-unit)*2)}
 .corner-family-preview .corner-inset{width:70px;height:55px;border-radius:calc(var(--corner-unit)*1.5)}
 .corner-family-preview .corner-control{width:65px;height:44px;border-radius:var(--corner-unit)}
+
+/* Material fills replace the solid accent fill; use surface ink for enabled primary labels. */
+@media (forced-colors: none) {
+  button.rv-component.primary:not(:disabled) { color: var(--color-text) !important; }
+}

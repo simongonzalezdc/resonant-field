@@ -228,3 +228,8 @@
 /* Semantic signals use the independent accent, never the material pigment budget. */
 :is(button,select,textarea,input):not(.aug-source-panel *):focus-visible{outline-color:var(--accent-color)!important}
 [data-volume-role=primary],[data-volume-state=selected]{border-color:var(--accent-color)!important}
+
+/* Material fills replace the solid accent fill; use surface ink for enabled primary labels. */
+@media (forced-colors: none) {
+  button.rv-component.primary:not(:disabled) { color: var(--color-text) !important; }
+}
